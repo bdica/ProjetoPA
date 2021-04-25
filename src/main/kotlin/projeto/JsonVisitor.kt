@@ -84,10 +84,10 @@ class MyJSON: Visitor {
                 keyEncontrada = "boolean"
             }
             else if(vj.objeto.objetoRecebido is String) {
-                keyEncontrada = "text"
+                keyEncontrada = "string"
             }
             else if(vj.objeto.objetoRecebido is Enum<*>) {
-                keyEncontrada = "text"
+                keyEncontrada = "string"
             }
 
             textoJson += "\"" + keyEncontrada + "\": " + vj.converterValorEmJson() +",\n"
