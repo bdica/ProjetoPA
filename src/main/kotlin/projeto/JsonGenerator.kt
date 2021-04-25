@@ -30,6 +30,13 @@ fun jsonGenerator(o: Any): String {
         return ja.createJson()
     }
 
+    if(o is String) {
+        val mj = MyJSON()
+        val oj = JsonObject(o)
+        oj.accept(mj)
+        return mj.textoJson.substringBefore(",") + "\n}"
+    }
+
     val mj = MyJSON()
     val oj = JsonObject(o)
     oj.accept(mj)

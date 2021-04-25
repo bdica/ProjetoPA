@@ -79,6 +79,16 @@ fun findVariable(): Boolean { //verifica se o JsonObject coloca as variaveis do 
     return false
 }
 
+fun generatePrimitiveJson(o: Any): String { //verificar se criou json de um tipo primitivo
+    var jsonEsperado = """
+        {
+        "number": 5
+        }
+    """.trimIndent()
+
+    return jsonEsperado
+}
+
 fun generateJson(o: Any): Boolean { //verificar se criou json do objeto
 
     var jsonEsperado = """
@@ -162,27 +172,32 @@ class Testes() {
     }
 
     @Test
-    fun contarInteiros() {
+    fun contarInteiros() { //teste para contar propriedades de tipo Int
         assertEquals(2, countAllInts(variavelJogador),  "O número de Ints é diferente do inserido")
     }
 
     @Test
-    fun procurarStrings() {
+    fun procurarStrings() { //teste para mostrar nome de propriedades de tipo String
         assertEquals("nome", getAllStrings(variavelJogador),  "A String é diferente da inserida")
     }
 
     @Test
-    fun imprimirStrings() {
+    fun imprimirStrings() { //teste para mostrar propriedades de tipo String
         assertEquals("\"Cristiano Ronaldo\"", printAllStrings(variavelJogador),  "A String é diferente da inserida")
     }
 
     @Test
-    fun procurarVariavel() {
+    fun procurarVariavel() { //teste para verificar a reflexão da classe JsonObject e ver se insere as variaveis do objeto no map children
         assertTrue(findVariable(), "Não encontrou a anotação")
     }
 
     @Test
-    fun verificarJson() {
+    fun verificarJsonInt() { //teste para verificar se a criação do texto json de um tipo primitivo ficou correta
+        assertEquals(generatePrimitiveJson(5), jsonGenerator(5),  "Não gerou o json correto")
+    }
+
+    @Test
+    fun verificarJson() { //teste para verificar se a criação do texto json ficou correta
         assertTrue(generateJson(variavelMarca), "Não gerou o json correto")
     }
 

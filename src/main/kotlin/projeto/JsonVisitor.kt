@@ -77,27 +77,20 @@ class MyJSON: Visitor {
 
         if(vj.hasAnnotation == false) { //se nao tiver de omitir json devido a alguma anotação, escreve o json
 
-            if(vj.valorRecebido is Int || vj.valorRecebido is Double) {
+            if(vj.objeto.objetoRecebido is Int || vj.objeto.objetoRecebido is Double) { //no caso de receber um tipo primitivo
                 keyEncontrada = "number"
             }
-            else if(vj.valorRecebido is Boolean) {
+            else if(vj.objeto.objetoRecebido is Boolean) {
                 keyEncontrada = "boolean"
             }
-            else if(vj.valorRecebido is Boolean) {
-                keyEncontrada = "boolean"
-            }
-            else if(vj.valorRecebido is String) {
+            else if(vj.objeto.objetoRecebido is String) {
                 keyEncontrada = "text"
             }
-            else if(vj.valorRecebido is Enum<*>) {
+            else if(vj.objeto.objetoRecebido is Enum<*>) {
                 keyEncontrada = "text"
             }
 
             textoJson += "\"" + keyEncontrada + "\": " + vj.converterValorEmJson() +",\n"
-
-            /*if(vj.valorRecebido is String) {
-                 textoJson = ""
-            }*/
 
         }
 

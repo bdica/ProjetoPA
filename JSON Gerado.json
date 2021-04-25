@@ -1,40 +1,40 @@
 {
 "clubes": [
 {
-"text": "Sporting CP",
-"text": "Portugal",
+"nome": "Sporting CP",
+"pais": "Portugal",
 "patrocinios": [
 {
-"text": "NOS",
-"number": 2030
+"nome": "NOS",
+"validade": 2030
 },
 {
-"text": "Macron",
-"number": 2021
+"nome": "Macron",
+"validade": 2021
 }
 ]
 },
 {
-"text": "Manchester United",
-"text": "Inglaterra",
+"nome": "Manchester United",
+"pais": "Inglaterra",
 "patrocinios": null
 },
 {
-"text": "Real Madrid",
-"text": "Espanha",
+"nome": "Real Madrid",
+"pais": "Espanha",
 "patrocinios": null
 }
 ],
-"number": 36,
-"text": "Cristiano Ronaldo",
+"idade": 36,
+"nome": "Cristiano Ronaldo",
 "patrocinio": [
 {
-"text": "Nike",
-"number": 2050
+"nome": "Nike",
+"validade": 2050
 }
 ],
-"text": "PL",
-"boolean": false,
+"posicao": "PL",
+"retirado": false,
 "trofeus": [
 {
 "Champions League": 5
