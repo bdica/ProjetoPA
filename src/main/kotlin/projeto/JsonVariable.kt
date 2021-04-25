@@ -1,6 +1,12 @@
 package projeto
 
-//Filtra o tipo de valor recebido para saber que print fazer
+/**
+ * Classe que representa uma variável
+ * Filtra o tipo de valor recebido para saber que json criar
+ *
+ * @param valor variavel do objeto recebido
+ * @param parent representa o elemento pai associado a esta classe
+ */
 class JsonVariable(valor: Any?, parent: JsonObject): Element(parent) { //representa uma variavel
 
     var objeto = parent

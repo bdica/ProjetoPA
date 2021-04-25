@@ -2,7 +2,12 @@ package projeto
 
 import java.io.File
 
-fun fileGenerator(o: String) { //gera um ficheiro json com a string inserida
+/**
+ * Gera um ficheiro json com a string inserida
+ *
+ * @param o texto para criar o ficheiro
+ */
+fun fileGenerator(o: String) {
     val fileName = "JSON Gerado.json"
 
     var file = File(fileName)
@@ -10,7 +15,13 @@ fun fileGenerator(o: String) { //gera um ficheiro json com a string inserida
     file.writeText(o)
 }
 
-fun jsonGenerator(o: Any): String { //gera o texto json do objeto inserido
+/**
+ * Gera o texto json do objeto inserido
+ *
+ * @param o objeto para gerar o json
+ * @return texto do objeto em formato json
+ */
+fun jsonGenerator(o: Any): String {
 
     if(o is List<*> || o is Map<*,*>) {
         val oj = JsonObject(o)

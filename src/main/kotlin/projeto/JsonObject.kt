@@ -4,6 +4,11 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.hasAnnotation
 
+/**
+ * Classe que representa um objeto
+ *
+ * @param o objeto para gerar o json
+ */
 class JsonObject(o: Any) : Element(o) { //representa um objeto com um map de variaveis (children)
 
     var objetoRecebido = o

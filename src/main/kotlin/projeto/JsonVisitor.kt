@@ -1,5 +1,8 @@
 package projeto
 
+/**
+ * Interface Visitor com funções genéricas
+ */
 interface Visitor { //interface com funções genéricas para serem implementadas
     fun visitJsonObject(node: JsonObject): Boolean
     fun visitJsonVariable(node: JsonVariable): Boolean
@@ -7,7 +10,10 @@ interface Visitor { //interface com funções genéricas para serem implementada
     fun endVisitJsonObject(node: JsonObject)
 }
 
-//Implementa o Visitor e diz o que fazem as funções do Visit (funções para escrever o json)
+/**
+ * Classe que implementa a interface Visitor
+ * Realiza as visitas aos elementos json
+ */
 class MyJSON: Visitor {
 
     var textoJson = "{" //texto final
@@ -51,7 +57,7 @@ class MyJSON: Visitor {
         return true
     }
 
-    override fun visitJsonVariable(vj: JsonVariable): Boolean { //escreve no JsonObject o texto json de acordo com as JsonVariable visitadas
+    override fun visitJsonVariable(vj: JsonVariable): Boolean { //escreve o texto json de acordo com as JsonVariable visitadas
 
         var keyEncontrada = "" //para encontrar o nome da variavel e escrever no json
 
