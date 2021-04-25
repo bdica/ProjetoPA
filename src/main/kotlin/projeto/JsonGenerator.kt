@@ -3,7 +3,7 @@ package projeto
 import java.io.File
 
 fun fileGenerator(o: String) { //gera um ficheiro json com a string inserida
-    val fileName = "my json.json"
+    val fileName = "JSON Gerado.json"
 
     var file = File(fileName)
 
