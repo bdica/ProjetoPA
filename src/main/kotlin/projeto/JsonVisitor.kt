@@ -78,17 +78,3 @@ class MyJSON: Visitor {
 
 }
 
-fun jsonGenerator(o: Any): String {
-
-    if(o is List<*> || o is Map<*,*>) {
-        val oj = JsonObject(o)
-        var ja = JsonArray(o, oj)
-        ja.createJson()
-        return ja.createJson()
-    }
-
-    val mj = MyJSON()
-    val oj = JsonObject(o)
-    oj.accept(mj)
-    return mj.textoJson
-}
