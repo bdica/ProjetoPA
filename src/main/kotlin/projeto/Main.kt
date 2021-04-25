@@ -50,7 +50,7 @@ fun main() {
     //println(jsonGenerator(patrocinios))
     //println(jsonGenerator(trofeus))
 
-    println(jsonGenerator(variavelJogador))
+    println(jsonGenerator("teste"))
     fileGenerator(jsonGenerator(variavelJogador))
 
 }

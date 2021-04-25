@@ -19,6 +19,16 @@ class JsonObject(o: Any) : Element(o) { //representa um objeto com um map de var
 
     fun readObject() { //coloca as variaveis do objeto recebido na lista children (associando-as a uma JsonVariable)
 
+        if(objetoRecebido is Int || objetoRecebido is Double || objetoRecebido is Enum<*>  || objetoRecebido is Boolean || objetoRecebido is String) { //se receber tipos primitivos
+            val variavel = JsonVariable(objetoRecebido, this)
+
+            val clazz: KClass<Any> = objetoRecebido::class as KClass<Any>
+            var nomeObjeto = clazz.simpleName + ""
+
+            variavel.converterValorEmJson()
+            children.put(nomeObjeto, variavel)
+        }
+
         clazz.declaredMemberProperties.forEach {
 
             var nomeVariavel = it.name
