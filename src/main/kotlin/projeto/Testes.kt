@@ -7,22 +7,54 @@ import kotlin.test.assertTrue
 @Target(AnnotationTarget.FUNCTION)
 annotation class Before()
 
-fun countAllInts(o: Any): Int { //obter numero de Ints no objeto recebido
-    var sum = 0
-
-    val mj = MyJSON()
-    val oj = JsonObject(o)
-    oj.accept(mj)
-
-    oj.children.forEach {
-        if(it.value is JsonVariable) {
-            if((it.value as JsonVariable).valorRecebido is Int) {
-                sum++
-            }
+fun generatePrimitiveIntJson(o: Any): String { //verificar se criou json de um tipo primitivo Int
+    var jsonEsperado = """
+        {
+        "number": 5
         }
+    """.trimIndent()
+
+    return jsonEsperado
+}
+
+fun generatePrimitiveBooleanJson(o: Any): String { //verificar se criou json de um tipo primitivo Boolean
+    var jsonEsperado = """
+        {
+        "boolean": true
+        }
+    """.trimIndent()
+
+    return jsonEsperado
+}
+
+fun generateJson(o: Any): Boolean { //verificar se criou json do objeto
+
+    var jsonEsperado = """
+        {
+        "catalogo": [
+        {
+        "categoria": "Carro Usado",
+        "nome": "Ford Focus",
+        "preco": 30000,
+        "vendido": false
+        },
+        {
+        "categoria": "Carro Novo",
+        "nome": "Ford Fiesta",
+        "preco": 20000,
+        "vendido": true
+        }
+        ],
+        "id": 1,
+        "nome": "Ford"
+        }
+    """.trimIndent()
+
+    if(jsonEsperado == jsonGenerator(o)) {
+        return true
     }
 
-    return sum
+    return false
 }
 
 fun getAllStrings(o: Any): String { //obter todas as variaveis que são do tipo String
@@ -61,6 +93,24 @@ fun printAllStrings(o: Any): String { //obter todos os valores das variaveis que
     return json
 }
 
+fun countAllInts(o: Any): Int { //obter numero de Ints no objeto recebido
+    var sum = 0
+
+    val mj = MyJSON()
+    val oj = JsonObject(o)
+    oj.accept(mj)
+
+    oj.children.forEach {
+        if(it.value is JsonVariable) {
+            if((it.value as JsonVariable).valorRecebido is Int) {
+                sum++
+            }
+        }
+    }
+
+    return sum
+}
+
 fun findVariable(): Boolean { //verifica se o JsonObject coloca as variaveis do objeto recebido no map children durante a reflexão
 
     data class Pessoa(var nome: String)
@@ -79,41 +129,22 @@ fun findVariable(): Boolean { //verifica se o JsonObject coloca as variaveis do 
     return false
 }
 
-fun generatePrimitiveJson(o: Any): String { //verificar se criou json de um tipo primitivo
-    var jsonEsperado = """
-        {
-        "number": 5
+fun verifyAnnotation(): Boolean { //verifica se o JsonObject assume as anotações das variaveis do objeto recebido durante a reflexão
+
+    data class Pessoa(
+        @RenameProperty("apelido")
+        var nome: String
+    )
+    var o = Pessoa("Costa")
+
+    val mj = MyJSON()
+    val oj = JsonObject(o)
+    oj.accept(mj)
+
+    oj.children.forEach {
+        if (it.key == "apelido") {
+            return true
         }
-    """.trimIndent()
-
-    return jsonEsperado
-}
-
-fun generateJson(o: Any): Boolean { //verificar se criou json do objeto
-
-    var jsonEsperado = """
-        {
-        "catalogo": [
-        {
-        "categoria": "Carro Usado",
-        "nome": "Ford Focus",
-        "preco": 30000,
-        "vendido": false
-        },
-        {
-        "categoria": "Carro Novo",
-        "nome": "Ford Fiesta",
-        "preco": 20000,
-        "vendido": true
-        }
-        ],
-        "id": 1,
-        "nome": "Ford"
-        }
-    """.trimIndent()
-
-    if(jsonEsperado == jsonGenerator(o)) {
-        return true
     }
 
     return false
@@ -171,10 +202,24 @@ class Testes() {
         return m1
     }
 
+    //Testar a Serialização
+
     @Test
-    fun contarInteiros() { //teste para contar propriedades de tipo Int
-        assertEquals(2, countAllInts(variavelJogador),  "O número de Ints é diferente do inserido")
+    fun verificarJsonInt() { //teste para verificar se a criação do texto json de um tipo primitivo ficou correta
+        assertEquals(generatePrimitiveIntJson(5), jsonGenerator(5),  "Não gerou o json correto")
     }
+
+    @Test
+    fun verificarJsonBoolean() { //teste para verificar se a criação do texto json de um tipo primitivo ficou correta
+        assertEquals(generatePrimitiveBooleanJson(true), jsonGenerator(true),  "Não gerou o json correto")
+    }
+
+    @Test
+    fun verificarJson() { //teste para verificar se a criação do texto json ficou correta
+        assertTrue(generateJson(variavelMarca), "Não gerou o json correto")
+    }
+
+    //Testar a Pesquisa
 
     @Test
     fun procurarStrings() { //teste para mostrar nome de propriedades de tipo String
@@ -187,19 +232,20 @@ class Testes() {
     }
 
     @Test
+    fun contarInteiros() { //teste para contar propriedades de tipo Int
+        assertEquals(2, countAllInts(variavelJogador),  "O número de Ints é diferente do inserido")
+    }
+
+    //Testar a Reflexão
+
+    @Test
     fun procurarVariavel() { //teste para verificar a reflexão da classe JsonObject e ver se insere as variaveis do objeto no map children
         assertTrue(findVariable(), "Não encontrou a variavel")
     }
 
     @Test
-    fun verificarJsonInt() { //teste para verificar se a criação do texto json de um tipo primitivo ficou correta
-        assertEquals(generatePrimitiveJson(5), jsonGenerator(5),  "Não gerou o json correto")
-    }
-
-    @Test
-    fun verificarJson() { //teste para verificar se a criação do texto json ficou correta
-        assertTrue(generateJson(variavelMarca), "Não gerou o json correto")
+    fun verificarAnotacao() { //teste para verificar a reflexão da classe JsonObject e ver se utiliza a anotação de alterar nome da propriedade
+        assertTrue(verifyAnnotation(), "A anotação não foi utilizada")
     }
 
 }
-
