@@ -236,7 +236,7 @@ class Testes() {
         assertEquals(2, countAllInts(variavelJogador),  "O número de Ints é diferente do inserido")
     }
 
-    //Testar a Reflexão
+    //Testar a Inferência por Reflexão
 
     @Test
     fun procurarVariavel() { //teste para verificar a reflexão da classe JsonObject e ver se insere as variaveis do objeto no map children
