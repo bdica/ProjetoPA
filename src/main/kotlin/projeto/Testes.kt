@@ -188,7 +188,7 @@ class Testes() {
 
     @Test
     fun procurarVariavel() { //teste para verificar a reflexão da classe JsonObject e ver se insere as variaveis do objeto no map children
-        assertTrue(findVariable(), "Não encontrou a anotação")
+        assertTrue(findVariable(), "Não encontrou a variavel")
     }
 
     @Test
