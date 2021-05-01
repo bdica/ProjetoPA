@@ -7,7 +7,7 @@ package projeto
  * @param valor variavel do objeto recebido
  * @param parent representa o elemento pai associado a esta classe
  */
-class JsonArray(o: Any, parent: JsonObject) : Element(o) { //representa uma lista ou um map com uma map de variaveis (children)
+class JsonArray(o: Any, parent: JsonObject?) : Element(o) { //representa uma lista ou um map com uma map de variaveis (children)
 
     var objeto = parent
     var valorRecebido = o
@@ -22,8 +22,14 @@ class JsonArray(o: Any, parent: JsonObject) : Element(o) { //representa uma list
         if(valorRecebido is List<*>) {
             (valorRecebido as List<*>).forEach {
 
-                val variavel = JsonVariable(it, objeto)
+                val oj = JsonObject(0) //no caso de receber objeto null
+                var variavel = JsonVariable(it, oj)
                 variavel.converterValorEmJson()
+
+                if(objeto != null) {
+                    variavel = JsonVariable(it, objeto as JsonObject)
+                    variavel.converterValorEmJson()
+                }
 
                 var texto = variavel.converterValorEmJson()
 

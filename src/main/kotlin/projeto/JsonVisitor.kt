@@ -36,16 +36,18 @@ class MyJSON: Visitor {
 
         var keyEncontrada = "" //para encontrar o nome da variavel e escrever no json
 
-        ja.objeto.children.forEach { //para encontrar o nome da variavel e escrever no json
-            var valor = ja //value do elemento da lista lido
+        if(ja.objeto != null) {
+            ja.objeto!!.children.forEach { //para encontrar o nome da variavel e escrever no json
+                var valor = ja //value do elemento da lista lido
 
-            val mapIterator = ja.objeto.children.iterator()
+                val mapIterator = ja.objeto!!.children.iterator()
 
-            while (mapIterator.hasNext()) {
-                val mapEntry = mapIterator.next()
+                while (mapIterator.hasNext()) {
+                    val mapEntry = mapIterator.next()
 
-                when (mapEntry.value) {
-                    valor -> keyEncontrada = mapEntry.key //quando value = valor, iguala a key à keyEncontrada
+                    when (mapEntry.value) {
+                        valor -> keyEncontrada = mapEntry.key //quando value = valor, iguala a key à keyEncontrada
+                    }
                 }
             }
         }

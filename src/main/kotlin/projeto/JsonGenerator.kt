@@ -24,8 +24,7 @@ fun fileGenerator(o: String) {
 fun jsonGenerator(o: Any): String {
 
     if(o is List<*> || o is Map<*,*>) {
-        val oj = JsonObject(o)
-        var ja = JsonArray(o, oj)
+        var ja = JsonArray(o, null)
         ja.createJson()
         return ja.createJson()
     }
