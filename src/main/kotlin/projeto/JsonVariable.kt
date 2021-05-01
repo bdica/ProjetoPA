@@ -7,7 +7,7 @@ package projeto
  * @param valor variavel do objeto recebido
  * @param parent representa o elemento pai associado a esta classe
  */
-class JsonVariable(valor: Any?, parent: JsonObject): Element(parent) { //representa uma variavel
+class JsonVariable(valor: Any?, parent: JsonObject): JsonElement(parent) { //representa uma variavel
 
     var objeto = parent
     var valorRecebido = valor

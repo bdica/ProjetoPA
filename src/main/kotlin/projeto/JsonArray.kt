@@ -7,7 +7,7 @@ package projeto
  * @param valor variavel do objeto recebido
  * @param parent representa o elemento pai associado a esta classe
  */
-class JsonArray(o: Any, parent: JsonObject?) : Element(o) { //representa uma lista ou um map com uma map de variaveis (children)
+class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma lista ou um map com uma map de variaveis (children)
 
     var objeto = parent
     var valorRecebido = o

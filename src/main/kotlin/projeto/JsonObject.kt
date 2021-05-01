@@ -9,13 +9,13 @@ import kotlin.reflect.full.hasAnnotation
  *
  * @param o objeto para gerar o json
  */
-class JsonObject(o: Any) : Element(o) { //representa um objeto com um map de variaveis (children)
+class JsonObject(o: Any) : JsonElement(o) { //representa um objeto com um map de variaveis (children)
 
     var objetoRecebido = o
 
     val clazz: KClass<Any> = o::class as KClass<Any>
 
-    var children = mutableMapOf<String, Element>() //lista de variaveis do objeto
+    var children = mutableMapOf<String, JsonElement>() //lista de variaveis do objeto
 
     fun readObject() { //coloca as variaveis do objeto recebido na lista children (associando-as a uma JsonVariable)
 

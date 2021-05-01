@@ -5,6 +5,6 @@ package projeto
  *
  * @param value valor recebido para a criação de json
  */
-abstract class Element(value: Any) {
+abstract class JsonElement(value: Any) {
     abstract fun accept(v: Visitor)
 }
