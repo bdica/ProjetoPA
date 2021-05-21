@@ -1,15 +1,15 @@
-#Gerador de JSON
+# Gerador de JSON
 
 Biblioteca para para produzir dados no formato JSON.<br/>
 Esta biblioteca permite criar JSON a partir de objetos, podendo o processo ser adaptado por via de anotações nas classes desses objetos..
 
-#Tutorial
+# Tutorial
 
-##1. Modelo de Dados
+## 1. Modelo de Dados
 
 ...
 
-###Annotações
+### Annotações
 
 @HideJson:<br/>
 Esta anotação permite omitir uma propriedade de um objeto
@@ -27,7 +27,7 @@ Esta anotação recebe uma string como parâmetro e altera o nome de uma proprie
     val reformado: Boolean
 ```
 
-##2. Plugins para o Visualizador
+## 2. Plugins para o Visualizador
 
 ...
 
