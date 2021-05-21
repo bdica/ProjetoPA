@@ -50,7 +50,9 @@ fun generateJson(o: Any): Boolean { //verificar se criou json do objeto
         }
     """.trimIndent()
 
-    if(jsonEsperado == jsonGenerator(o)) {
+    var jg = JsonGenerator()
+
+    if(jsonEsperado == jg.jsonGenerator(o)) {
         return true
     }
 
@@ -206,12 +208,14 @@ class Testes() {
 
     @Test
     fun verificarJsonInt() { //teste para verificar se a criação do texto json de um tipo primitivo ficou correta
-        assertEquals(generatePrimitiveIntJson(5), jsonGenerator(5),  "Não gerou o json correto")
+        var jg = JsonGenerator()
+        assertEquals(generatePrimitiveIntJson(5), jg.jsonGenerator(5),  "Não gerou o json correto")
     }
 
     @Test
     fun verificarJsonBoolean() { //teste para verificar se a criação do texto json de um tipo primitivo ficou correta
-        assertEquals(generatePrimitiveBooleanJson(true), jsonGenerator(true),  "Não gerou o json correto")
+        var jg = JsonGenerator()
+        assertEquals(generatePrimitiveBooleanJson(true), jg.jsonGenerator(true),  "Não gerou o json correto")
     }
 
     @Test

@@ -1,4 +1,7 @@
-package projeto
+package projeto.janela
+
+import projeto.HideJson
+import projeto.RenameProperty
 
 data class Jogador(
     val nome: String,
@@ -38,7 +41,7 @@ fun main() {
     val c1 = Clube("Sporting CP", "Portugal", patrocinios)
     val c2 = Clube("Manchester United", "Inglaterra", null)
     val c3 = Clube("Real Madrid", "Espanha", null)
-    val clubes = mutableListOf(c1,c2,c3)
+    val clubes = mutableListOf(c1,c2)
 
     val trofeus = mutableMapOf<String, Any>()
     trofeus.put("Champions League", 5)
@@ -47,12 +50,6 @@ fun main() {
 
     val variavelJogador = Jogador("Cristiano Ronaldo", 36, 7, Posicao.PL, false, p1, clubes, trofeus)
 
-    //println(jsonGenerator(patrocinios))
-    //println(jsonGenerator(trofeus))
-    //println(jsonGenerator("teste"))
-
-    var jg = JsonGenerator()
-    println(jg.jsonGenerator(variavelJogador))
-    jg.fileGenerator(jg.jsonGenerator(variavelJogador))
-
+    val w = JsonInjector.create(JsonTreeSkeleton::class)
+    w.open(variavelJogador)
 }

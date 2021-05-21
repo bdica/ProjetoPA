@@ -16,6 +16,7 @@ class JsonVariable(valor: Any?, parent: JsonObject): JsonElement(parent) { //rep
 
     override fun accept(v: Visitor) { //escreve o texto json da variavel
         v.visitJsonVariable(this) //this é a propria JsonVariable
+        v.endVisitJsonVariable(this)
     }
 
     fun converterValorEmJson(): String {

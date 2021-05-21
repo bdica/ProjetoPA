@@ -76,5 +76,6 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
     //vai a cada variavel da lista, cria um objeto com a variavel e obtem a string dos objetos
     override fun accept(v: Visitor) { //itera os elementos da lista
         v.visitJsonArray(this)
+        v.endVisitJsonArray(this)
     }
 }

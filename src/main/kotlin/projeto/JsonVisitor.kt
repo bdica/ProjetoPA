@@ -8,6 +8,8 @@ interface Visitor { //interface com funções genéricas para serem implementada
     fun visitJsonVariable(node: JsonVariable): Boolean
     fun visitJsonArray(node: JsonArray): Boolean
     fun endVisitJsonObject(node: JsonObject)
+    fun endVisitJsonVariable(node: JsonVariable)
+    fun endVisitJsonArray(node: JsonArray)
 }
 
 /**
@@ -30,6 +32,14 @@ class MyJSON: Visitor {
     override fun endVisitJsonObject(node: JsonObject) {
         textoJson = textoJson.substring(0, textoJson.length - 2)
         textoJson += "\n}"
+    }
+
+    override fun endVisitJsonVariable(node: JsonVariable) {
+        //
+    }
+
+    override fun endVisitJsonArray(node: JsonArray) {
+        //
     }
 
     override fun visitJsonArray(ja: JsonArray): Boolean {
