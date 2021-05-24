@@ -31,7 +31,7 @@ fun generateJson(o: Any): Boolean { //verificar se criou json do objeto
 
     var jsonEsperado = """
         {
-        "catalogo": [
+        "catalogo": [ 
         {
         "categoria": "Carro Usado",
         "nome": "Ford Focus",

@@ -28,8 +28,7 @@ class JsonGenerator() {
 
         if(o is List<*> || o is Map<*,*>) {
             var ja = JsonArray(o, null)
-            ja.createJson()
-            return ja.createJson()
+            return ja.jsonTotal()
         }
 
         if(o is String) {

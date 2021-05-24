@@ -113,7 +113,7 @@ class JsonTreeSkeleton() {
         val iconeFicheiro = Image(null, setup.fileIcon)
 
         tree.items.forEach {
-            if(it.text == "(object)") {
+            if(it.text == "(object)" /*|| it.text == "(object) "*/) {
                 it.image = iconePasta
             }
 
@@ -123,6 +123,16 @@ class JsonTreeSkeleton() {
                 if(it.data.toString().startsWith("[")) { //no caso de objeto, lista ou map
                     it.image = iconePasta
                 }
+
+                it.items.forEach { //nós da lista, map ou objeto
+                    if(it.text == "(object) ") {
+                        it.image = iconePasta
+                    }
+                    else {
+                        it.image = iconeFicheiro
+                    }
+                }
+
             }
         }
     }
@@ -164,7 +174,7 @@ class JsonTreeSkeleton() {
 
         if(o is List<*> || o is Map<*,*>) {
             var ja = JsonArray(o, null)
-            jsonSelecionado = ja.createJson()
+            //jsonSelecionado = ja.createJson()
         }
 
         if(o is String) {
@@ -247,8 +257,6 @@ class JsonTraverser(private val arvore: Tree): Visitor {
 
     override fun visitJsonObject(oj: JsonObject): Boolean {
 
-        println("**********VISITEI UM JsonObject**********")
-
         oj.readObject() //ao visitar um JsonObject, le as suas variaveis e coloca-as na lista children
 
         textoJson += "\n"
@@ -266,8 +274,6 @@ class JsonTraverser(private val arvore: Tree): Visitor {
 
     override fun endVisitJsonObject(oj: JsonObject) {
 
-        println("**********SAI DE UM JsonObject**********")
-
         textoJson = textoJson.substring(0, textoJson.length - 2)
         textoJson += "\n}"
 
@@ -276,20 +282,23 @@ class JsonTraverser(private val arvore: Tree): Visitor {
 
     override fun visitJsonVariable(vj: JsonVariable): Boolean {
 
-        println("**********VISITEI UM JsonVariable**********")
-
         var keyEncontrada = ""
 
-        vj.objeto.children.forEach {
-            var valor = vj
+        if(vj.nomeChave != "") {
+            keyEncontrada = vj.nomeChave
+        }
+        else {
+            vj.objeto.children.forEach {
+                var valor = vj
 
-            val mapIterator = vj.objeto.children.iterator()
+                val mapIterator = vj.objeto.children.iterator()
 
-            while (mapIterator.hasNext()) {
-                val mapEntry = mapIterator.next()
+                while (mapIterator.hasNext()) {
+                    val mapEntry = mapIterator.next()
 
-                when (mapEntry.value) {
-                    valor -> keyEncontrada = mapEntry.key
+                    when (mapEntry.value) {
+                        valor -> keyEncontrada = mapEntry.key
+                    }
                 }
             }
         }
@@ -309,37 +318,46 @@ class JsonTraverser(private val arvore: Tree): Visitor {
                 keyEncontrada = "string"
             }
 
-            textoJson += "\"" + keyEncontrada + "\": " + vj.converterValorEmJson() + ",\n"
-
             val node = TreeItem(currentDirectory, SWT.NONE)
             node.data = vj.converterValorEmJson()
 
-            if(vj.recebeuObjeto == true) {
-                node.text = keyEncontrada
-                //currentDirectory = node
+            if(vj.fromArray == true) {
+                if(vj.nomeChave == "") { //se nao vier de um map
+                    textoJson += vj.converterValorEmJson() +",\n"
+                    node.text = vj.converterValorEmJson() +"\n"
+                }
+                else { //caso venha de um map
+                    var recebido = vj.converterValorEmJson()
+                    recebido = recebido.replace("{\n\"valor\": ", "")
+                    recebido = recebido.replace("\n}", "")
+
+                    textoJson += "{\n" + "\"" + keyEncontrada + "\": " + recebido + "\n}" + ",\n"
+                    node.data = "{\n" + "\"" + keyEncontrada + "\": " + recebido + "\n}" + "\n"
+                    node.text = "(object) "
+                }
+
+                if(keyEncontrada == "") {
+                    node.text = "(object) "
+                }
             }
             else {
-                node.text = "\"" + keyEncontrada + "\": " + vj.converterValorEmJson() + "\n"
+                textoJson += "\"" + keyEncontrada + "\": " + vj.converterValorEmJson() +",\n"
+                node.text = keyEncontrada + "\n"
             }
 
-            //currentDirectory = node //cria nó para variavel e para objetos
-
+            /*if(node.data.toString().startsWith("[\n{")) { //no caso de ser um objeto
+                node.text = keyEncontrada //"(object) "
+            }*/
         }
 
         return true
     }
 
     override fun endVisitJsonVariable(node: JsonVariable) {
-        /*if(node.recebeuObjeto == true) {
-            currentDirectory = currentDirectory!!.parentItem //se tiver num objeto, fecha o nó
-        }*/
-
-        //currentDirectory = currentDirectory!!.parentItem //fecha o nó da variavel
+        //
     }
 
     override fun visitJsonArray(ja: JsonArray): Boolean {
-
-        println("**********VISITEI UM JsonArray**********")
 
         var keyEncontrada = "" //para encontrar o nome da variavel e escrever no json
 
@@ -359,19 +377,29 @@ class JsonTraverser(private val arvore: Tree): Visitor {
             }
         }
 
+
         if(ja.hasAnnotation == false) { //se nao tiver de omitir json devido a alguma anotação, escreve o json
-            textoJson += "\"" + keyEncontrada + "\": " + ja.createJson() + ",\n"
+
+            textoJson += "\"" + keyEncontrada + "\": " + "[ \n"
 
             val node = TreeItem(currentDirectory, SWT.NONE)
             node.text = keyEncontrada
-            node.data = ja.createJson()
-            //currentDirectory = node //entra no array, abre um novo nó
+            node.data = ja.jsonTotal()
+
+            ja.createJson()
+
+            currentDirectory = node
         }
 
         return true
     }
 
     override fun endVisitJsonArray(node: JsonArray) {
-        //currentDirectory = currentDirectory!!.parentItem //sai do array, volta ao nó anterior
+        if(node.hasAnnotation == false) {
+            textoJson = textoJson.substring(0, textoJson.length - 2)
+            textoJson += "\n],\n"
+        }
+
+        currentDirectory = currentDirectory!!.parentItem //sai do array, volta ao nó anterior
     }
 }

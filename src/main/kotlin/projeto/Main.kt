@@ -47,9 +47,9 @@ fun main() {
 
     val variavelJogador = Jogador("Cristiano Ronaldo", 36, 7, Posicao.PL, false, p1, clubes, trofeus)
 
-    //println(jsonGenerator(patrocinios))
-    //println(jsonGenerator(trofeus))
-    //println(jsonGenerator("teste"))
+    //println(jg.jsonGenerator(patrocinios))
+    //println(jg.jsonGenerator(trofeus))
+    //println(jg.jsonGenerator("teste"))
 
     var jg = JsonGenerator()
     println(jg.jsonGenerator(variavelJogador))

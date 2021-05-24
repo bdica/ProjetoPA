@@ -13,9 +13,22 @@ class JsonVariable(valor: Any?, parent: JsonObject): JsonElement(parent) { //rep
     var valorRecebido = valor
     var hasAnnotation = false //para o caso de haver uma anotação
     var recebeuObjeto = false //se recebeu objeto retira os [ ]
+    var fromArray = false //se veio de um array e for um objeto, nao coloca os [ ]
+    var nomeChave = ""
+
+    //var elementsList = mutableListOf<JsonObject>()
 
     override fun accept(v: Visitor) { //escreve o texto json da variavel
         v.visitJsonVariable(this) //this é a propria JsonVariable
+
+        /*if(v.visitJsonVariable(this)) {////////////////////////////////////////////////////////////////
+            elementsList.subList(elementsList.size/2, elementsList.size).clear()
+            elementsList.forEach {
+                it.accept(v)
+            }
+        }*/
+
+
         v.endVisitJsonVariable(this)
     }
 
@@ -45,10 +58,18 @@ class JsonVariable(valor: Any?, parent: JsonObject): JsonElement(parent) { //rep
 
             val obj = JsonObject(valorRecebido as Any)
 
+            //elementsList.add(obj)
+
             val mj = MyJSON()
             obj.accept(mj)
 
-            return "[\n" + mj.textoJson + "\n]"
+            if(fromArray == false) {
+                return "[\n" + mj.textoJson + "\n]"
+            }
+            else {
+                return mj.textoJson
+            }
+
         }
 
     }

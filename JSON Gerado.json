@@ -1,9 +1,9 @@
 {
-"clubes": [
+"clubes": [ 
 {
 "nome": "Sporting CP",
 "pais": "Portugal",
-"patrocinios": [
+"patrocinios": [ 
 {
 "nome": "NOS",
 "validade": 2030
@@ -18,6 +18,11 @@
 "nome": "Manchester United",
 "pais": "Inglaterra",
 "patrocinios": null
+},
+{
+"nome": "Real Madrid",
+"pais": "Espanha",
+"patrocinios": null
 }
 ],
 "idade": 36,
@@ -30,7 +35,7 @@
 ],
 "posicao": "PL",
 "retirado": false,
-"trofeus": [
+"trofeus": [ 
 {
 "Champions League": 5
 },
