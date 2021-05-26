@@ -53,13 +53,14 @@ class MyJSON: Visitor {
     }
 
     override fun endVisitJsonObject(node: JsonObject) {
-        textoJson = textoJson.substring(0, textoJson.length - 2)
+        if(node.hasAnnotation == false) {
+            textoJson = textoJson.substring(0, textoJson.length - 2)
 
-        if(node.recebeuNull == true && node.objetoRecebido == 0) {
-            textoJson += ",\n"
-        }
-        else {
-            textoJson += "\n},\n"
+            if (node.recebeuNull == true && node.objetoRecebido == 0) {
+                textoJson += ",\n"
+            } else {
+                textoJson += "\n},\n"
+            }
         }
     }
 

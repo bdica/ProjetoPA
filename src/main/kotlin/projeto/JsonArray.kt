@@ -27,12 +27,18 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
                     if ((it !is List<*> && it !is Map<*, *>) && (it is Int || it is Double || it is Enum<*> || it is Boolean || it is String)) {
                         val oj = JsonObject(0) //no caso de não haver JsonObject (input não ser um objeto e ser apenas uma lista)
                         var variavel = JsonVariable(it, oj)
+                        if(hasAnnotation == true) {
+                            variavel.hasAnnotation = true
+                        }
                         variavel.converterValorEmJson()
                         variavel.fromArray = true
                         elementsList.add(variavel)
                     }
                     if(it !is Int && it !is Double && it !is Enum<*>  && it !is Boolean && it !is String) {
                         var objeto = JsonObject(it as Any)
+                        if(hasAnnotation == true) {
+                            objeto.hasAnnotation = true
+                        }
                         elementsList.add(objeto)
                     }
                 }
@@ -40,12 +46,18 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
                 if(objeto != null) { //se a lista vem de um JsonObject
                     if((it !is List<*> && it !is Map<*, *>) && (it is Int || it is Double || it is Enum<*>  || it is Boolean || it is String)) {
                         var variavel = JsonVariable(it, objeto as JsonObject)
+                        if(hasAnnotation == true) {
+                            variavel.hasAnnotation = true
+                        }
                         variavel.converterValorEmJson()
                         variavel.fromArray = true
                         elementsList.add(variavel)
                     }
                     if(it !is Int && it !is Double && it !is Enum<*>  && it !is Boolean && it !is String) {
                         var objeto = JsonObject(it as Any)
+                        if(hasAnnotation == true) {
+                            objeto.hasAnnotation = true
+                        }
                         elementsList.add(objeto)
                     }
                 }
@@ -62,6 +74,10 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
                 if(objeto != null) { //se o map vem de um JsonObject
                     var variavel = JsonObject(o)
 
+                    if(hasAnnotation == true) {
+                        variavel.hasAnnotation = true
+                    }
+
                     variavel.nomeChave = chave.toString()
                     nomeObjeto = variavel.nomeChave
 
@@ -69,6 +85,10 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
                 }
                 else {
                     var variavel = JsonObject(o)
+
+                    if(hasAnnotation == true) {
+                        variavel.hasAnnotation = true
+                    }
 
                     variavel.nomeChave = chave.toString()
                     nomeObjeto = variavel.nomeChave
@@ -82,27 +102,31 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
     fun obterJsonGerado(): String {
         var texto = ""
 
-        if(naoTemJsonObject == true) { //se objeto recebido do utilizador for apenas uma lista
-            var jo = JsonObject(0)
-            var ja = JsonArray(valorRecebido, jo)
-            ja.createJson()
-            texto += ja.obterJsonGerado()
-            return texto
-        }
-
-        if(valorRecebido !is Map<*,*>) {
-            elementsList.forEach {
-                if(it is JsonObject) {
-                    texto += it.obterJsonGerado() + ",\n"
-                }
+        if(hasAnnotation == false) {
+            if (naoTemJsonObject == true) { //se objeto recebido do utilizador for apenas uma lista
+                var jo = JsonObject(0)
+                var ja = JsonArray(valorRecebido, jo)
+                ja.createJson()
+                texto += ja.obterJsonGerado()
+                return texto
             }
-            return texto.dropLast(2) + "\n]"
+
+            if (valorRecebido !is Map<*, *>) {
+                elementsList.forEach {
+                    if (it is JsonObject) {
+                        texto += it.obterJsonGerado() + ",\n"
+                    }
+                }
+                return texto.dropLast(2) + "\n]"
+            } else {
+                (valorRecebido as Map<*, *>).forEach {
+                    texto += "{\n" + "\"" + it.key + "\": " + it.value + "\n},\n"
+                }
+                return texto.dropLast(2) + "\n]"
+            }
         }
         else {
-            (valorRecebido as Map<*, *>).forEach {
-                texto += "{\n" + "\"" + it.key + "\": " + it.value + "\n},\n"
-            }
-            return texto.dropLast(2) + "\n]"
+            return texto
         }
     }
 

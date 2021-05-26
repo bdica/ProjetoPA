@@ -237,19 +237,19 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
 
         oj.readObject() //ao visitar um JsonObject, le as suas variaveis e coloca-as na lista children
 
-        val node: TreeItem = if (currentDirectory == null)
-            TreeItem(arvore, SWT.NONE)
-        else
-            TreeItem(currentDirectory, SWT.NONE)
-
-        if(oj.nome == "") {
-            node.text = "(object)" //valor que é apresentado na janela que se vê da arvore
-        }
-        else {
-            node.text = oj.nome
-        }
-
         if(oj.hasAnnotation == false) { //se nao tiver de omitir json devido a alguma anotação, escreve o json
+
+            val node: TreeItem = if (currentDirectory == null)
+                TreeItem(arvore, SWT.NONE)
+            else
+                TreeItem(currentDirectory, SWT.NONE)
+
+            if(oj.nome == "") {
+                node.text = "(object)" //valor que é apresentado na janela que se vê da arvore
+            }
+            else {
+                node.text = oj.nome
+            }
 
             if(oj.nomeChave != "") { //caso objeto venha de um map
                 textoJson += "{\n" + "\"" + oj.nomeChave + "\": "
@@ -272,38 +272,39 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
                     }
                 }
             }
-        }
 
-        if (oj.recebeuNull == true && oj.objetoRecebido == 0) {
-            node.data = "null"
-        }
-        else {
-            node.data = oj.obterJsonGerado()
-        }
+            if (oj.recebeuNull == true && oj.objetoRecebido == 0) {
+                node.data = "null"
+            }
+            else {
+                node.data = oj.obterJsonGerado()
+            }
 
-        if(oj.nomeChave != "") { //no caso de ser objeto de um map
-            node.data = "{\n" + "\"" + oj.nomeChave + "\": " + oj.objetoRecebido.toString()
-                .substring( oj.objetoRecebido.toString().indexOf("=")+1).dropLast(1) + "\n}"
-        }
+            if(oj.nomeChave != "") { //no caso de ser objeto de um map
+                node.data = "{\n" + "\"" + oj.nomeChave + "\": " + oj.objetoRecebido.toString()
+                    .substring( oj.objetoRecebido.toString().indexOf("=")+1).dropLast(1) + "\n}"
+            }
 
-        currentDirectory = node
-        currentDirectory!!.setImage(0, iconePasta)
+            currentDirectory = node
+            currentDirectory!!.setImage(0, iconePasta)
+
+        }
 
         return true
     }
 
     override fun endVisitJsonObject(oj: JsonObject) {
+        if(oj.hasAnnotation == false) {
+            textoJson = textoJson.substring(0, textoJson.length - 2)
 
-        textoJson = textoJson.substring(0, textoJson.length - 2)
+            if (oj.recebeuNull == true && oj.objetoRecebido == 0) {
+                textoJson += ",\n"
+            } else {
+                textoJson += "\n},\n"
+            }
 
-        if(oj.recebeuNull == true && oj.objetoRecebido == 0) {
-            textoJson += ",\n"
+            currentDirectory = currentDirectory!!.parentItem //depois de visitar um objeto, volta ao diretorio anterior
         }
-        else {
-            textoJson += "\n},\n"
-        }
-
-        currentDirectory = currentDirectory!!.parentItem //depois de visitar um objeto, volta ao diretorio anterior
     }
 
     override fun visitJsonVariable(vj: JsonVariable): Boolean {

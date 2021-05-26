@@ -126,11 +126,13 @@ class JsonObject(o: Any? = null) : JsonElement(o!!) { //representa um objeto com
     }
 
     override fun accept(v: Visitor) { //itera os elementos da lista children
-        if (v.visitJsonObject(this)) {
-            children.forEach {
-                it.value.accept(v)
+        if(hasAnnotation == false) {
+            if (v.visitJsonObject(this)) {
+                children.forEach {
+                    it.value.accept(v)
+                }
             }
+            v.endVisitJsonObject(this)
         }
-        v.endVisitJsonObject(this)
     }
 }
