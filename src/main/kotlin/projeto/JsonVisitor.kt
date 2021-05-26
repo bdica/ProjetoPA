@@ -24,35 +24,59 @@ class MyJSON: Visitor {
 
         oj.readObject() //ao visitar um JsonObject, le as suas variaveis e coloca-as na lista children
 
-        textoJson += "\n"
+        if(oj.hasAnnotation == false) { //se nao tiver de omitir json devido a alguma anotação, escreve o json
+
+            if(oj.nomeChave != "") { //caso objeto venha de um map
+                textoJson += "{\n" + "\"" + oj.nomeChave + "\": "
+            }
+            else {
+                if(oj.recebeuNull == true && oj.objetoRecebido == 0) { //caso do valor recebido no JsonObject ser null
+                    if(oj.nome != "") {
+                        textoJson += "\"" + oj.nome + "\": " + ""
+                    }
+                    else {
+                        textoJson += ""
+                    }
+                }
+                else {
+                    if(oj.nome != "") {
+                        textoJson += "\"" + oj.nome + "\": " + "{\n"
+                    }
+                    else {
+                        textoJson += "{\n"
+                    }
+                }
+            }
+        }
 
         return true
     }
 
     override fun endVisitJsonObject(node: JsonObject) {
         textoJson = textoJson.substring(0, textoJson.length - 2)
-        textoJson += "\n}"
+
+        if(node.recebeuNull == true && node.objetoRecebido == 0) {
+            textoJson += ",\n"
+        }
+        else {
+            textoJson += "\n},\n"
+        }
     }
 
     override fun visitJsonVariable(vj: JsonVariable): Boolean { //escreve o texto json de acordo com as JsonVariable visitadas
 
         var keyEncontrada = "" //para encontrar o nome da variavel e escrever no json
 
-        if(vj.nomeChave != "") {
-            keyEncontrada = vj.nomeChave
-        }
-        else {
-            vj.objeto.children.forEach { //para encontrar o nome da variavel e escrever no json
-                var valor = vj //value do elemento da lista lido
+        vj.objeto.children.forEach { //para encontrar o nome da variavel e escrever no json
+            var valor = vj //value do elemento da lista lido
 
-                val mapIterator = vj.objeto.children.iterator()
+            val mapIterator = vj.objeto.children.iterator()
 
-                while (mapIterator.hasNext()) {
-                    val mapEntry = mapIterator.next()
+            while (mapIterator.hasNext()) {
+                val mapEntry = mapIterator.next()
 
-                    when (mapEntry.value) {
-                        valor -> keyEncontrada = mapEntry.key //quando value = valor, iguala a key à keyEncontrada
-                    }
+                when (mapEntry.value) {
+                    valor -> keyEncontrada = mapEntry.key //quando value = valor, iguala a key à keyEncontrada
                 }
             }
         }
@@ -60,7 +84,12 @@ class MyJSON: Visitor {
         if(vj.hasAnnotation == false) { //se nao tiver de omitir json devido a alguma anotação, escreve o json
 
             if(vj.objeto.objetoRecebido is Int || vj.objeto.objetoRecebido is Double) { //no caso de receber um tipo primitivo
-                keyEncontrada = "number"
+                if(vj.objeto.recebeuNull == true && vj.objeto.objetoRecebido == 0) { //caso o JsonObject receba um null
+                    keyEncontrada = ""
+                }
+                else {
+                    keyEncontrada = "number"
+                }
             }
             else if(vj.objeto.objetoRecebido is Boolean) {
                 keyEncontrada = "boolean"
@@ -73,19 +102,22 @@ class MyJSON: Visitor {
             }
 
             if(vj.fromArray == true) {
-                if(vj.nomeChave == "") { //se nao vier de um map
-                    textoJson += vj.converterValorEmJson() +",\n"
-                }
-                else { //caso venha de um map
-                    var recebido = vj.converterValorEmJson()
-                    recebido = recebido.replace("{\n\"valor\": ", "")
-                    recebido = recebido.replace("\n}", "")
-
-                    textoJson += "{\n" + "\"" + keyEncontrada + "\": " + recebido + "\n}" + ",\n"
-                }
+                textoJson += vj.converterValorEmJson() +",\n"
             }
             else {
-                textoJson += "\"" + keyEncontrada + "\": " + vj.converterValorEmJson() +",\n"
+                var recebido = "\"" + keyEncontrada + "\": " + vj.converterValorEmJson() +",\n"
+                recebido = recebido.replace("\"valor\": ", "")
+                recebido = recebido.replace("\n}", "")
+
+                if(vj.objeto.recebeuNull == true && vj.objeto.objetoRecebido == 0) { //caso o JsonObject receba um null
+                    var recebido = "\"" + keyEncontrada + "\": " + "null" +",\n"
+                    recebido = recebido.replace("\"\": ", "")
+                    textoJson += recebido
+                }
+                else {
+                    textoJson += recebido
+                }
+
             }
         }
 

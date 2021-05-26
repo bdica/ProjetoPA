@@ -36,8 +36,8 @@ fun main() {
     val patrocinios = mutableListOf(p2,p3)
 
     val c1 = Clube("Sporting CP", "Portugal", patrocinios)
-    val c2 = Clube("Manchester United", "Inglaterra", null)
-    val c3 = Clube("Real Madrid", "Espanha", null)
+    val c2 = Clube("Manchester United", "Inglaterra", null) //null
+    val c3 = Clube("Real Madrid", "Espanha", null) //null
     val clubes = mutableListOf(c1,c2,c3)
 
     val trofeus = mutableMapOf<String, Any>()
@@ -50,6 +50,7 @@ fun main() {
     //println(jg.jsonGenerator(patrocinios))
     //println(jg.jsonGenerator(trofeus))
     //println(jg.jsonGenerator("teste"))
+    //println(jg.jsonGenerator(null))
 
     var jg = JsonGenerator()
     println(jg.jsonGenerator(variavelJogador))

@@ -37,7 +37,7 @@ class JsonTreeSkeleton() {
 
     val shell: Shell = Shell(Display.getDefault())
     val tree: Tree
-    var jsonSelecionado: String = ""
+    var jsonGerado: String = ""
     
     var elementosMarcados = mutableListOf<TreeItem?>()
     var elementoSelecionado: TreeItem? = null
@@ -52,19 +52,12 @@ class JsonTreeSkeleton() {
 
         tree.addSelectionListener(object : SelectionAdapter() { //ao clicar num objeto tem de abrir o json
             override fun widgetSelected(e: SelectionEvent) {
-
                 elementoSelecionado = tree.selection.first()
 
                 //apresentação dos elementos no lado direito ao clicar nos objetos
-                if(tree.selection.first().text == "(object)") {
-                    println(jsonSelecionado) //selecionado
-                    labelElements.text = "" + jsonSelecionado
-                    elementoSelecionado!!.data = jsonSelecionado
-                }
-                else {
-                    println(tree.selection.first().text) //selecionado
-                    labelElements.text = "" + tree.selection.first().data
-                }
+                tree.getItem(0).data = jsonGerado //json completo do objeto
+                println(tree.selection.first().text) //selecionado
+                labelElements.text = "" + tree.selection.first().data //texto json na janela da direita
 
                 labelElements.requestLayout()
             }
@@ -93,6 +86,7 @@ class JsonTreeSkeleton() {
                 if (keyword != "") {
                     val root: TreeItem = tree.getItem(0) //item está contido no primeiro nó (objeto principal)
                     pesquisa(root, keyword)
+                    searchText.text = "" //volta a meter a caixa de texto vazia
                 }
             }
         })
@@ -104,35 +98,6 @@ class JsonTreeSkeleton() {
             if (it.text?.toString()?.toUpperCase()?.contains(searchText.toUpperCase()) == true) {
                 it.background = Color(Display.getCurrent(), 0, 255, 0)
                 elementosMarcados.add(it)
-            }
-        }
-    }
-
-    fun setIcons() {
-        val iconePasta = Image(null, setup.folderIcon)
-        val iconeFicheiro = Image(null, setup.fileIcon)
-
-        tree.items.forEach {
-            if(it.text == "(object)" /*|| it.text == "(object) "*/) {
-                it.image = iconePasta
-            }
-
-            it.items.forEach {
-                it.image = iconeFicheiro
-
-                if(it.data.toString().startsWith("[")) { //no caso de objeto, lista ou map
-                    it.image = iconePasta
-                }
-
-                it.items.forEach { //nós da lista, map ou objeto
-                    if(it.text == "(object) ") {
-                        it.image = iconePasta
-                    }
-                    else {
-                        it.image = iconeFicheiro
-                    }
-                }
-
             }
         }
     }
@@ -155,6 +120,7 @@ class JsonTreeSkeleton() {
                         super.widgetSelected(e)
                         if (keywordText != null) {
                             action.input = keywordText.text
+                            keywordText.text = "" //volta a meter a caixa de texto vazia
                         }
                         action.execute(this@JsonTreeSkeleton)
                     }
@@ -164,35 +130,44 @@ class JsonTreeSkeleton() {
         shell.pack()
     }
 
-    fun open(o: Any) {
+    fun open(o: Any?) {
 
         shell.setSize(setup.width, setup.height)
         shell.text = setup.title
         shell.layout = setup.layoutManager
 
-        val visitor = JsonTraverser(tree)
+        val visitor = JsonTraverser(tree, setup)
 
         if(o is List<*> || o is Map<*,*>) {
-            var ja = JsonArray(o, null)
-            //jsonSelecionado = ja.createJson()
+            val ja = JsonArray(o, null)
+            ja.naoTemJsonObject = true
+            jsonGerado = "[\n" + ja.obterJsonGerado()
         }
 
         if(o is String) {
             val oj = JsonObject(o)
             oj.accept(visitor)
+            jsonGerado = visitor.textoJson.substringBefore(",") + "\n}"
+        }
+
+        if(o == null) {
+            val oj = JsonObject(0)
+            oj.recebeuNull = true
+            oj.objetoRecebido = 0
+            oj.accept(visitor)
+            jsonGerado = visitor.textoJson.substring(0, visitor.textoJson.length - 2).substring(1)
         }
 
         val oj = JsonObject(o)
         oj.accept(visitor)
+        jsonGerado = visitor.textoJson.substring(0, visitor.textoJson.length - 2).substring(1)
 
-        jsonSelecionado = visitor.textoJson
-
-        setIcons()
         setActions()
 
         tree.expandAll()
         shell.pack()
         shell.open()
+
         val display = Display.getDefault()
         while (!shell.isDisposed) {
             if (!display.readAndDispatch()) display.sleep()
@@ -250,24 +225,70 @@ class JsonTreeSkeleton() {
 
 }
 
-class JsonTraverser(private val arvore: Tree): Visitor {
+class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
 
     var currentDirectory: TreeItem? = null //estrutura grafica
     var textoJson = "{" //texto final
+
+    var config = setup
+    val iconePasta = Image(null, config.folderIcon)
+    val iconeFicheiro = Image(null, config.fileIcon)
 
     override fun visitJsonObject(oj: JsonObject): Boolean {
 
         oj.readObject() //ao visitar um JsonObject, le as suas variaveis e coloca-as na lista children
 
-        textoJson += "\n"
-
         val node: TreeItem = if (currentDirectory == null)
             TreeItem(arvore, SWT.NONE)
         else
             TreeItem(currentDirectory, SWT.NONE)
-        node.text = "(object)" //valor que é apresentado na janela que se vê da arvore
-        node.data = textoJson //valor a mostrar em json quando se clica num item da arvore
+
+        if(oj.nome == "") {
+            node.text = "(object)" //valor que é apresentado na janela que se vê da arvore
+        }
+        else {
+            node.text = oj.nome
+        }
+
+        if(oj.hasAnnotation == false) { //se nao tiver de omitir json devido a alguma anotação, escreve o json
+
+            if(oj.nomeChave != "") { //caso objeto venha de um map
+                textoJson += "{\n" + "\"" + oj.nomeChave + "\": "
+            }
+            else {
+                if(oj.recebeuNull == true && oj.objetoRecebido == 0) { //caso do valor recebido no JsonObject ser null
+                    if(oj.nome != "") {
+                        textoJson += "\"" + oj.nome + "\": " + ""
+                    }
+                    else {
+                        textoJson += ""
+                    }
+                }
+                else {
+                    if(oj.nome != "") {
+                        textoJson += "\"" + oj.nome + "\": " + "{\n"
+                    }
+                    else {
+                        textoJson += "{\n"
+                    }
+                }
+            }
+        }
+
+        if (oj.recebeuNull == true && oj.objetoRecebido == 0) {
+            node.data = "null"
+        }
+        else {
+            node.data = oj.obterJsonGerado()
+        }
+
+        if(oj.nomeChave != "") { //no caso de ser objeto de um map
+            node.data = "{\n" + "\"" + oj.nomeChave + "\": " + oj.objetoRecebido.toString()
+                .substring( oj.objetoRecebido.toString().indexOf("=")+1).dropLast(1) + "\n}"
+        }
+
         currentDirectory = node
+        currentDirectory!!.setImage(0, iconePasta)
 
         return true
     }
@@ -275,7 +296,13 @@ class JsonTraverser(private val arvore: Tree): Visitor {
     override fun endVisitJsonObject(oj: JsonObject) {
 
         textoJson = textoJson.substring(0, textoJson.length - 2)
-        textoJson += "\n}"
+
+        if(oj.recebeuNull == true && oj.objetoRecebido == 0) {
+            textoJson += ",\n"
+        }
+        else {
+            textoJson += "\n},\n"
+        }
 
         currentDirectory = currentDirectory!!.parentItem //depois de visitar um objeto, volta ao diretorio anterior
     }
@@ -284,29 +311,29 @@ class JsonTraverser(private val arvore: Tree): Visitor {
 
         var keyEncontrada = ""
 
-        if(vj.nomeChave != "") {
-            keyEncontrada = vj.nomeChave
-        }
-        else {
-            vj.objeto.children.forEach {
-                var valor = vj
+        vj.objeto.children.forEach {
+            var valor = vj
 
-                val mapIterator = vj.objeto.children.iterator()
+            val mapIterator = vj.objeto.children.iterator()
 
-                while (mapIterator.hasNext()) {
-                    val mapEntry = mapIterator.next()
+            while (mapIterator.hasNext()) {
+                val mapEntry = mapIterator.next()
 
-                    when (mapEntry.value) {
-                        valor -> keyEncontrada = mapEntry.key
-                    }
+                when (mapEntry.value) {
+                    valor -> keyEncontrada = mapEntry.key
                 }
             }
         }
 
         if(vj.hasAnnotation == false) {
 
-            if(vj.objeto.objetoRecebido is Int || vj.objeto.objetoRecebido is Double) {
-                keyEncontrada = "number"
+            if(vj.objeto.objetoRecebido is Int || vj.objeto.objetoRecebido is Double) { //no caso de receber um tipo primitivo
+                if(vj.objeto.recebeuNull == true && vj.objeto.objetoRecebido == 0) { //caso o JsonObject receba um null
+                    keyEncontrada = ""
+                }
+                else {
+                    keyEncontrada = "number"
+                }
             }
             else if(vj.objeto.objetoRecebido is Boolean) {
                 keyEncontrada = "boolean"
@@ -318,36 +345,42 @@ class JsonTraverser(private val arvore: Tree): Visitor {
                 keyEncontrada = "string"
             }
 
-            val node = TreeItem(currentDirectory, SWT.NONE)
-            node.data = vj.converterValorEmJson()
-
             if(vj.fromArray == true) {
-                if(vj.nomeChave == "") { //se nao vier de um map
-                    textoJson += vj.converterValorEmJson() +",\n"
-                    node.text = vj.converterValorEmJson() +"\n"
-                }
-                else { //caso venha de um map
-                    var recebido = vj.converterValorEmJson()
-                    recebido = recebido.replace("{\n\"valor\": ", "")
-                    recebido = recebido.replace("\n}", "")
+                textoJson += vj.converterValorEmJson() +",\n"
 
-                    textoJson += "{\n" + "\"" + keyEncontrada + "\": " + recebido + "\n}" + ",\n"
-                    node.data = "{\n" + "\"" + keyEncontrada + "\": " + recebido + "\n}" + "\n"
-                    node.text = "(object) "
-                }
-
-                if(keyEncontrada == "") {
-                    node.text = "(object) "
-                }
+                var node = TreeItem(currentDirectory, SWT.NONE)
+                node.data = vj.converterValorEmJson() + "\n"
+                node.setImage(0, iconeFicheiro)
+                node.text = vj.converterValorEmJson() +"\n"
             }
             else {
-                textoJson += "\"" + keyEncontrada + "\": " + vj.converterValorEmJson() +",\n"
-                node.text = keyEncontrada + "\n"
+                var recebido = "\"" + keyEncontrada + "\": " + vj.converterValorEmJson() +",\n"
+                recebido = recebido.replace("\"valor\": ", "")
+                recebido = recebido.replace("\n}", "")
+
+                if(vj.objeto.recebeuNull == true && vj.objeto.objetoRecebido == 0) { //caso o JsonObject receba um null
+                    var recebido = "\"" + keyEncontrada + "\": " + "null" +",\n"
+                    recebido = recebido.replace("\"\": ", "")
+                    textoJson += recebido
+                }
+                else {
+                    textoJson += recebido
+
+                    var node = TreeItem(currentDirectory, SWT.NONE)
+                    node.data = vj.converterValorEmJson() + "\n"
+                    node.setImage(0, iconeFicheiro)
+                    node.text = keyEncontrada
+
+                    if(keyEncontrada == "valor") { //no caso de ser objeto de um map
+                        if(vj.objeto.nomeChave != "") {
+                            node.text = vj.objeto.nomeChave
+                        }
+                    }
+
+                }
+
             }
 
-            /*if(node.data.toString().startsWith("[\n{")) { //no caso de ser um objeto
-                node.text = keyEncontrada //"(object) "
-            }*/
         }
 
         return true
@@ -377,18 +410,19 @@ class JsonTraverser(private val arvore: Tree): Visitor {
             }
         }
 
-
         if(ja.hasAnnotation == false) { //se nao tiver de omitir json devido a alguma anotação, escreve o json
 
             textoJson += "\"" + keyEncontrada + "\": " + "[ \n"
 
             val node = TreeItem(currentDirectory, SWT.NONE)
             node.text = keyEncontrada
-            node.data = ja.jsonTotal()
+            node.data = "[\n" + ja.obterJsonGerado() //texto completo do array
 
             ja.createJson()
 
             currentDirectory = node
+            currentDirectory!!.setImage(0, iconePasta)
+
         }
 
         return true
@@ -401,5 +435,6 @@ class JsonTraverser(private val arvore: Tree): Visitor {
         }
 
         currentDirectory = currentDirectory!!.parentItem //sai do array, volta ao nó anterior
+
     }
 }

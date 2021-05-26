@@ -13,25 +13,41 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
     var valorRecebido = o
     var hasAnnotation = false //para o caso de haver uma anotação
 
-    var children = mutableMapOf<String, Any>() //lista de variaveis do array (texto json, valor)
-
     var elementsList = mutableListOf<JsonElement>()
     var nomeObjeto = ""
+
+    var naoTemJsonObject = false
 
     fun createJson() { //vai a cada variavel da lista, obtem o seu json e coloca no Map (json da variavel, variavel)
 
         if(valorRecebido is List<*>) {
             (valorRecebido as List<*>).forEach {
 
-                val oj = JsonObject(0) //no caso de não haver JsonObject (input não ser um objeto e ser apenas uma lista)
-                var variavel = JsonVariable(it, oj)
-                variavel.converterValorEmJson()
+                if(objeto == null) {
+                    if ((it !is List<*> && it !is Map<*, *>) && (it is Int || it is Double || it is Enum<*> || it is Boolean || it is String)) {
+                        val oj = JsonObject(0) //no caso de não haver JsonObject (input não ser um objeto e ser apenas uma lista)
+                        var variavel = JsonVariable(it, oj)
+                        variavel.converterValorEmJson()
+                        variavel.fromArray = true
+                        elementsList.add(variavel)
+                    }
+                    if(it !is Int && it !is Double && it !is Enum<*>  && it !is Boolean && it !is String) {
+                        var objeto = JsonObject(it as Any)
+                        elementsList.add(objeto)
+                    }
+                }
 
                 if(objeto != null) { //se a lista vem de um JsonObject
-                    variavel = JsonVariable(it, objeto as JsonObject)
-                    variavel.converterValorEmJson()
-                    variavel.fromArray = true
-                    elementsList.add(variavel)
+                    if((it !is List<*> && it !is Map<*, *>) && (it is Int || it is Double || it is Enum<*>  || it is Boolean || it is String)) {
+                        var variavel = JsonVariable(it, objeto as JsonObject)
+                        variavel.converterValorEmJson()
+                        variavel.fromArray = true
+                        elementsList.add(variavel)
+                    }
+                    if(it !is Int && it !is Double && it !is Enum<*>  && it !is Boolean && it !is String) {
+                        var objeto = JsonObject(it as Any)
+                        elementsList.add(objeto)
+                    }
                 }
             }
         }
@@ -44,85 +60,50 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
                 var o = Objeto(valor)
 
                 if(objeto != null) { //se o map vem de um JsonObject
-                    var variavel = JsonVariable(o, objeto as JsonObject)
-                    variavel.fromArray = true
+                    var variavel = JsonObject(o)
 
                     variavel.nomeChave = chave.toString()
                     nomeObjeto = variavel.nomeChave
 
-                    variavel.converterValorEmJson()
                     elementsList.add(variavel)
                 }
                 else {
-                    val oj = JsonObject(0)
-                    var variavel = JsonVariable(o, oj)
-                    variavel.fromArray = true
+                    var variavel = JsonObject(o)
 
                     variavel.nomeChave = chave.toString()
                     nomeObjeto = variavel.nomeChave
 
-                    variavel.converterValorEmJson()
                     elementsList.add(variavel)
                 }
             }
         }
     }
 
-    fun jsonTotal(): String { //vai a cada variavel da lista, obtem o seu json e coloca no Map (json da variavel, variavel)
-        var valorRecebidoJson = "[\n"
+    fun obterJsonGerado(): String {
+        var texto = ""
 
-        if(valorRecebido is List<*>) {
-            (valorRecebido as List<*>).forEach {
-
-                val oj = JsonObject(0) //no caso de receber objeto null
-                var variavel = JsonVariable(it, oj)
-                variavel.converterValorEmJson()
-
-                if(objeto != null) {
-                    variavel = JsonVariable(it, objeto as JsonObject)
-                    variavel.converterValorEmJson()
-                }
-
-                var texto = variavel.converterValorEmJson()
-
-                if(variavel.recebeuObjeto == true) { //remove os [ ] dos objetos recebidos
-                    texto = texto.substring(2) //remove [
-                    texto = texto.substring(0, texto.length - 2) //remove ]
-                }
-
-                children.put(texto, it as Any)
-            }
-
-            children.forEach {
-                var textoVariavel = it.key
-                valorRecebidoJson += textoVariavel + ",\n"
-            }
-
-            valorRecebidoJson = valorRecebidoJson.substring(0, valorRecebidoJson.length - 2)
-            valorRecebidoJson += "\n]"
+        if(naoTemJsonObject == true) { //se objeto recebido do utilizador for apenas uma lista
+            var jo = JsonObject(0)
+            var ja = JsonArray(valorRecebido, jo)
+            ja.createJson()
+            texto += ja.obterJsonGerado()
+            return texto
         }
-        else if(valorRecebido is Map<*,*>) {
-            var texto = ""
 
+        if(valorRecebido !is Map<*,*>) {
+            elementsList.forEach {
+                if(it is JsonObject) {
+                    texto += it.obterJsonGerado() + ",\n"
+                }
+            }
+            return texto.dropLast(2) + "\n]"
+        }
+        else {
             (valorRecebido as Map<*, *>).forEach {
-
-                if(it.value is Int || it.value is Boolean || it.value == null) {
-                    texto += "{\n" + "\"" + it.key + "\": " + it.value + "\n},\n"
-                }
-                else if(it.value is Enum<*>) {
-                    texto += "{\n" + "\"" + it.key + "\": " + "\"" + it.value.toString() + "\"" + "\n},\n"
-                }
-                else { //se for String
-                    texto += "{\n" + "\"" + it.key + "\": " + "\"" + it.value + "\"" + "\n},\n"
-                }
+                texto += "{\n" + "\"" + it.key + "\": " + it.value + "\n},\n"
             }
-
-            valorRecebidoJson += texto
-            valorRecebidoJson = valorRecebidoJson.substring(0, valorRecebidoJson.length - 2)
-            valorRecebidoJson += "\n]"
+            return texto.dropLast(2) + "\n]"
         }
-
-        return valorRecebidoJson
     }
 
     override fun accept(v: Visitor) {
@@ -130,9 +111,6 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
             if(v.visitJsonArray(this)) {
                 elementsList.subList(elementsList.size/2, elementsList.size).clear() //remove duplicados da lista
                 elementsList.forEach {
-                    if(it is JsonVariable) {
-                        nomeObjeto = it.nomeChave
-                    }
                     it.accept(v)
                 }
             }

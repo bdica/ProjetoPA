@@ -27,12 +27,10 @@
 ],
 "idade": 36,
 "nome": "Cristiano Ronaldo",
-"patrocinio": [
-{
+"patrocinio": {
 "nome": "Nike",
 "validade": 2050
-}
-],
+},
 "posicao": "PL",
 "retirado": false,
 "trofeus": [ 

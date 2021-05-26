@@ -41,12 +41,12 @@ fun main() {
     val c1 = Clube("Sporting CP", "Portugal", patrocinios)
     val c2 = Clube("Manchester United", "Inglaterra", null)
     val c3 = Clube("Real Madrid", "Espanha", null)
-    val clubes = mutableListOf(c1,c2)
+    val clubes = mutableListOf(/*c1,*/ c2)
 
     val trofeus = mutableMapOf<String, Any>()
     trofeus.put("Champions League", 5)
-    trofeus.put("La Liga", 2)
-    trofeus.put("Taça de França", "não tem")
+    //trofeus.put("La Liga", 2)
+    //trofeus.put("Taça de França", "não tem")
 
     val variavelJogador = Jogador("Cristiano Ronaldo", 36, 7, Posicao.PL, false, p1, clubes, trofeus)
 
