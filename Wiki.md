@@ -54,6 +54,6 @@ Esta anotação recebe uma string como parâmetro e altera o nome de uma proprie
 
 ## 2. Plugins para o Visualizador
 
-...
+....
 
 
