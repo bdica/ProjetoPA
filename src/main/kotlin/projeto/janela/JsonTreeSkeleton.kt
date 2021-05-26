@@ -139,7 +139,7 @@ class JsonTreeSkeleton() {
         shell.text = setup.title
         shell.layout = setup.layoutManager
 
-        val visitor = JsonTraverser(tree, setup)
+        val visitor = JsonTraverser(tree)
 
         if(o is List<*> || o is Map<*,*>) {
             val ja = JsonArray(o, null)
@@ -166,6 +166,7 @@ class JsonTreeSkeleton() {
         jsonGerado = visitor.textoJson.substring(0, visitor.textoJson.length - 2).substring(1)
 
         setActions()
+        setIcons()
 
         tree.expandAll()
         shell.pack()
@@ -215,10 +216,42 @@ class JsonTreeSkeleton() {
         }
     }
 
+    fun setIconsAux(t: TreeItem) {
+        val iconePasta = Image(null, setup.folderIcon)
+        val iconeFicheiro = Image(null, setup.fileIcon)
+
+        t.items.forEach {
+            if (it.data.toString().startsWith("[") || it.data.toString().startsWith("{") || it.data.toString().startsWith("null")) {
+                it.image = iconePasta
+                setIconsAux(it)
+            } else {
+                it.image = iconeFicheiro
+                setIconsAux(it)
+            }
+        }
+    }
+
+    fun setIcons() {
+        val iconePasta = Image(null, setup.folderIcon)
+        val iconeFicheiro = Image(null, setup.fileIcon)
+
+        tree.items.forEach {
+            if (it.data.toString().startsWith("[") || it.data.toString().startsWith("{") || it.data.toString().startsWith("null")) {
+                it.image = iconePasta
+                setIconsAux(it)
+            } else {
+                it.image = iconeFicheiro
+                setIconsAux(it)
+            }
+            setIconsAux(it)
+        }
+    }
+
     //Auxiliares para varrer a árvore
     fun Tree.expandAll() = traverse { it.expanded = true }
 
-    fun Tree.traverse(visitor: (TreeItem) -> Unit) {
+    private fun Tree.traverse(visitor: (TreeItem) -> Unit) {
+
         fun TreeItem.traverse() {
 
             visitor(this)
@@ -232,14 +265,10 @@ class JsonTreeSkeleton() {
 
 }
 
-class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
+class JsonTraverser(private val arvore: Tree): Visitor {
 
     var currentDirectory: TreeItem? = null //estrutura grafica
     var textoJson = "{" //texto final
-
-    //var config = setup
-    //val iconePasta = Image(null, config.folderIcon)
-    //val iconeFicheiro = Image(null, config.fileIcon)
 
     override fun visitJsonObject(oj: JsonObject): Boolean {
 
@@ -294,8 +323,6 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
             }
 
             currentDirectory = node
-            //currentDirectory!!.setImage(0, iconePasta)
-
         }
 
         return true
@@ -358,7 +385,6 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
 
                 var node = TreeItem(currentDirectory, SWT.NONE)
                 node.data = vj.converterValorEmJson() + "\n"
-                //node.setImage(0, iconeFicheiro)
                 node.text = vj.converterValorEmJson() +"\n"
             }
             else {
@@ -376,7 +402,6 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
 
                     var node = TreeItem(currentDirectory, SWT.NONE)
                     node.data = vj.converterValorEmJson() + "\n"
-                    //node.setImage(0, iconeFicheiro)
                     node.text = keyEncontrada
 
                     if(keyEncontrada == "valor") { //no caso de ser objeto de um map
@@ -386,9 +411,7 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
                     }
 
                 }
-
             }
-
         }
 
         return true
@@ -429,8 +452,6 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
             ja.createJson()
 
             currentDirectory = node
-            //currentDirectory!!.setImage(0, iconePasta)
-
         }
 
         return true
