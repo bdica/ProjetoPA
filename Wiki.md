@@ -9,7 +9,7 @@ Esta biblioteca permite criar JSON a partir de objetos, podendo o processo ser a
 
 Para utilizar o modelo de dados é necessário criar instanciar a classe ***JsonGenerator*** e utilizar uma das suas funções de acordo com o pretendido.
 
-- Se o pretendido for derivar JSON a partir de um objeto deve-se usar a função ***jsonGenerator(o: Any?)*** da instância criada. É possível derivar JSON a partir de: <br/>
+- Se o pretendido for derivar JSON a partir de um objeto deve-se usar a função ***jsonGenerator(o: Any?)*** da instância criada. É possível derivar JSON a partir de:
     - Objeto
     - String
     - Int
@@ -33,6 +33,8 @@ Para utilizar o modelo de dados é necessário criar instanciar a classe ***Json
   ```
 
 ### Annotações
+
+Como forma de adaptar a instanciação, existem duas anotações disponíveis.
 
 @HideJson:<br/>
 Esta anotação permite omitir uma propriedade de um objeto
