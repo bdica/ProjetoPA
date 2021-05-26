@@ -55,7 +55,7 @@ Esta anotação recebe uma string como parâmetro e altera o nome de uma proprie
 ## 2. Plugins para o Visualizador
 
 Para utilizar o visualizador JSON é necessário instanciar a classe ***JsonTreeSkeleton*** através da classe ***JsonInjector***.
-A classe ***JsonInjector*** representa uma framework de injeção de dependência e neste caso recebe um pedido para criar um objeto da classe ***JsonTreeSkeleton***.
+A classe ***JsonInjector*** representa uma framework de injeção de dependência e neste caso recebe um pedido para criar um objeto da classe ***JsonTreeSkeleton***.<br/>
 Após isto tem de se invocar a função ***open(o: Any?)*** da classe ***JsonTreeSkeleton***, que recebe como parâmetro o objeto pretendido para a criação de JSON.
 
 ```kt
