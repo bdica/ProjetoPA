@@ -167,6 +167,7 @@ class JsonTreeSkeleton() {
 
         setActions()
         setIcons()
+        //removeNulls()
 
         tree.expandAll()
         shell.pack()
@@ -216,16 +217,26 @@ class JsonTreeSkeleton() {
         }
     }
 
+    fun removeNullsAux(t: TreeItem) {
+        t.items.forEach {
+            if (it.data.toString().startsWith("null")) {
+                it.dispose()
+            }
+        }
+    }
+
     fun setIconsAux(t: TreeItem) {
         val iconePasta = Image(null, setup.folderIcon)
         val iconeFicheiro = Image(null, setup.fileIcon)
 
         t.items.forEach {
-            if (it.data.toString().startsWith("[") || it.data.toString().startsWith("{") || it.data.toString().startsWith("null")) {
+            if (it.data.toString().startsWith("[") || it.data.toString().startsWith("{")) {
                 it.image = iconePasta
+                removeNullsAux(it)
                 setIconsAux(it)
             } else {
                 it.image = iconeFicheiro
+                removeNullsAux(it)
                 setIconsAux(it)
             }
         }
@@ -236,13 +247,16 @@ class JsonTreeSkeleton() {
         val iconeFicheiro = Image(null, setup.fileIcon)
 
         tree.items.forEach {
-            if (it.data.toString().startsWith("[") || it.data.toString().startsWith("{") || it.data.toString().startsWith("null")) {
+            if (it.data.toString().startsWith("[") || it.data.toString().startsWith("{")) {
                 it.image = iconePasta
+                removeNullsAux(it)
                 setIconsAux(it)
             } else {
                 it.image = iconeFicheiro
+                removeNullsAux(it)
                 setIconsAux(it)
             }
+            removeNullsAux(it)
             setIconsAux(it)
         }
     }
