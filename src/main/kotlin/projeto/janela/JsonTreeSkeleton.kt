@@ -167,7 +167,6 @@ class JsonTreeSkeleton() {
 
         setActions()
         setIcons()
-        //removeNulls()
 
         tree.expandAll()
         shell.pack()
