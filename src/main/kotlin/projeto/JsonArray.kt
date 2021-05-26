@@ -27,18 +27,12 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
                     if ((it !is List<*> && it !is Map<*, *>) && (it is Int || it is Double || it is Enum<*> || it is Boolean || it is String)) {
                         val oj = JsonObject(0) //no caso de não haver JsonObject (input não ser um objeto e ser apenas uma lista)
                         var variavel = JsonVariable(it, oj)
-                        if(hasAnnotation == true) {
-                            variavel.hasAnnotation = true
-                        }
                         variavel.converterValorEmJson()
                         variavel.fromArray = true
                         elementsList.add(variavel)
                     }
                     if(it !is Int && it !is Double && it !is Enum<*>  && it !is Boolean && it !is String) {
                         var objeto = JsonObject(it as Any)
-                        if(hasAnnotation == true) {
-                            objeto.hasAnnotation = true
-                        }
                         elementsList.add(objeto)
                     }
                 }
@@ -46,18 +40,12 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
                 if(objeto != null) { //se a lista vem de um JsonObject
                     if((it !is List<*> && it !is Map<*, *>) && (it is Int || it is Double || it is Enum<*>  || it is Boolean || it is String)) {
                         var variavel = JsonVariable(it, objeto as JsonObject)
-                        if(hasAnnotation == true) {
-                            variavel.hasAnnotation = true
-                        }
                         variavel.converterValorEmJson()
                         variavel.fromArray = true
                         elementsList.add(variavel)
                     }
                     if(it !is Int && it !is Double && it !is Enum<*>  && it !is Boolean && it !is String) {
                         var objeto = JsonObject(it as Any)
-                        if(hasAnnotation == true) {
-                            objeto.hasAnnotation = true
-                        }
                         elementsList.add(objeto)
                     }
                 }
@@ -74,10 +62,6 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
                 if(objeto != null) { //se o map vem de um JsonObject
                     var variavel = JsonObject(o)
 
-                    if(hasAnnotation == true) {
-                        variavel.hasAnnotation = true
-                    }
-
                     variavel.nomeChave = chave.toString()
                     nomeObjeto = variavel.nomeChave
 
@@ -85,10 +69,6 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
                 }
                 else {
                     var variavel = JsonObject(o)
-
-                    if(hasAnnotation == true) {
-                        variavel.hasAnnotation = true
-                    }
 
                     variavel.nomeChave = chave.toString()
                     nomeObjeto = variavel.nomeChave
@@ -131,23 +111,24 @@ class JsonArray(o: Any, parent: JsonObject?) : JsonElement(o) { //representa uma
     }
 
     override fun accept(v: Visitor) {
-        if(valorRecebido is Map<*,*>) {
-            if(v.visitJsonArray(this)) {
-                elementsList.subList(elementsList.size/2, elementsList.size).clear() //remove duplicados da lista
-                elementsList.forEach {
-                    it.accept(v)
+        if(hasAnnotation == false) {
+            if (valorRecebido is Map<*, *>) {
+                if (v.visitJsonArray(this)) {
+                    elementsList.subList(elementsList.size / 2, elementsList.size).clear() //remove duplicados da lista
+                    elementsList.forEach {
+                        it.accept(v)
+                    }
                 }
-            }
-            v.endVisitJsonArray(this)
-        }
-        else {
-            if(v.visitJsonArray(this)) {
-                elementsList.subList(elementsList.size/2, elementsList.size).clear() //remove duplicados da lista
-                elementsList.forEach {
-                    it.accept(v)
+                v.endVisitJsonArray(this)
+            } else {
+                if (v.visitJsonArray(this)) {
+                    elementsList.subList(elementsList.size / 2, elementsList.size).clear() //remove duplicados da lista
+                    elementsList.forEach {
+                        it.accept(v)
+                    }
                 }
+                v.endVisitJsonArray(this)
             }
-            v.endVisitJsonArray(this)
         }
     }
 }
