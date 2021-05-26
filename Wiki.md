@@ -66,7 +66,7 @@ Após isto tem de se invocar a função ***open(o: Any?)*** da classe ***JsonTre
 ### Plugins
 
 É possível extender o visualizador através de plugins para personalizar a visualização e acrescentar ações.<br/>
-Para criar um plugin é necessário modificar o ficheiro ***di.properties*** que se encontra na diretoria [src](https://github.com/bdica/ProjetoPA/tree/master/src) do projeto.
+Para criar um plugin é necessário modificar o ficheiro de configuração ***di.properties*** que se encontra na diretoria [src](https://github.com/bdica/ProjetoPA/tree/master/src) do projeto.
 
 Neste caso o ficheiro indica que a propriedade setup dos objetos JsonTreeSkeleton será inicializada com um objeto DefaultSetup, e que a lista da propriedade actions será populada com um objeto Edit e outro Undo.
 
