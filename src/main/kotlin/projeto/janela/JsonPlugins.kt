@@ -18,6 +18,8 @@ class DefaultSetup : JsonFrameSetup {
         get() = "folder_icon.png"
     override val fileIcon: String
         get() = "file_icon.png"
+    override val firstNodeName: String
+        get() = ""
 }
 
 //Ações

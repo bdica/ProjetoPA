@@ -16,6 +16,7 @@ interface JsonFrameSetup {
     val height: Int
     val folderIcon: String
     val fileIcon: String
+    val firstNodeName: String
 }
 
 interface JsonAction {
@@ -166,6 +167,10 @@ class JsonTreeSkeleton() {
         tree.expandAll()
         shell.pack()
         shell.open()
+
+        if(setup.firstNodeName != "") {
+            tree.getItem(0).text = setup.firstNodeName
+        }
 
         val display = Display.getDefault()
         while (!shell.isDisposed) {
