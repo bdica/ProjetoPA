@@ -1,7 +1,7 @@
 # Gerador de JSON
 
 Biblioteca para para produzir dados no formato JSON.<br/>
-Esta biblioteca permite criar JSON a partir de objetos, podendo o processo ser adaptado por via de anotações nas classes desses objetos..
+Esta biblioteca permite criar JSON a partir de objetos, podendo o processo ser adaptado por via de anotações nas classes desses objetos.
 
 # Tutorial
 
