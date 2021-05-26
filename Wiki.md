@@ -10,7 +10,15 @@ Esta biblioteca permite criar JSON a partir de objetos, podendo o processo ser a
 Para utilizar o modelo de dados é necessário criar instanciar a classe ***JsonGenerator*** e utilizar uma das suas funções de acordo com o pretendido.
 
 - Se o pretendido for derivar JSON a partir de um objeto deve-se usar a função ***jsonGenerator(o: Any?)*** da instância criada. É possível derivar JSON a partir de:
-  <br/>> - Objeto, String, Int, Double, Enum, Boolean, Null, Listas ou Maps.
+    - Objeto
+    - String
+    - Int
+    - Double
+    - Enum
+    - Boolean
+    - Null
+    - Listas
+    - Maps
   
 ```kt
     var jg = JsonGenerator()
