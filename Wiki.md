@@ -52,7 +52,7 @@ Esta anotação recebe uma string como parâmetro e altera o nome de uma proprie
     val reformado: Boolean
 ```
 
-## 2. Plugins para o Visualizador
+## 2. Visualizador
 
 Para utilizar o visualizador JSON é necessário instanciar a classe ***JsonTreeSkeleton*** através da classe ***JsonInjector***.
 A classe ***JsonInjector*** representa uma framework de injeção de dependência e neste caso recebe um pedido para criar um objeto da classe ***JsonTreeSkeleton***.<br/>
@@ -65,6 +65,7 @@ Após isto tem de se invocar a função ***open(o: Any?)*** da classe ***JsonTre
 
 ### Plugins
 
-
+É possível extender o visualizador através de plugins para personalizar a visualização e acrescentar ações.<br/>
+Para criar um plugin é necessário modificar o ficheiro di.properties que se encontra no diretório scr do projeto * [src](https://github.com/bdica/ProjetoPA/tree/master/src).
 
 
