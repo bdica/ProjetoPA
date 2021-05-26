@@ -99,6 +99,9 @@ class JsonTreeSkeleton() {
                 it.background = Color(Display.getCurrent(), 0, 255, 0)
                 elementosMarcados.add(it)
             }
+            if (it.data.toString().startsWith("[") || it.data.toString().startsWith("{")) {
+                pesquisa(it, searchText)
+            }
         }
     }
 
@@ -234,9 +237,9 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
     var currentDirectory: TreeItem? = null //estrutura grafica
     var textoJson = "{" //texto final
 
-    var config = setup
-    val iconePasta = Image(null, config.folderIcon)
-    val iconeFicheiro = Image(null, config.fileIcon)
+    //var config = setup
+    //val iconePasta = Image(null, config.folderIcon)
+    //val iconeFicheiro = Image(null, config.fileIcon)
 
     override fun visitJsonObject(oj: JsonObject): Boolean {
 
@@ -291,7 +294,7 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
             }
 
             currentDirectory = node
-            currentDirectory!!.setImage(0, iconePasta)
+            //currentDirectory!!.setImage(0, iconePasta)
 
         }
 
@@ -355,7 +358,7 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
 
                 var node = TreeItem(currentDirectory, SWT.NONE)
                 node.data = vj.converterValorEmJson() + "\n"
-                node.setImage(0, iconeFicheiro)
+                //node.setImage(0, iconeFicheiro)
                 node.text = vj.converterValorEmJson() +"\n"
             }
             else {
@@ -373,7 +376,7 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
 
                     var node = TreeItem(currentDirectory, SWT.NONE)
                     node.data = vj.converterValorEmJson() + "\n"
-                    node.setImage(0, iconeFicheiro)
+                    //node.setImage(0, iconeFicheiro)
                     node.text = keyEncontrada
 
                     if(keyEncontrada == "valor") { //no caso de ser objeto de um map
@@ -426,7 +429,7 @@ class JsonTraverser(private val arvore: Tree, setup: JsonFrameSetup): Visitor {
             ja.createJson()
 
             currentDirectory = node
-            currentDirectory!!.setImage(0, iconePasta)
+            //currentDirectory!!.setImage(0, iconePasta)
 
         }
 
