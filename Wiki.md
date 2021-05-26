@@ -66,6 +66,6 @@ Após isto tem de se invocar a função ***open(o: Any?)*** da classe ***JsonTre
 ### Plugins
 
 É possível extender o visualizador através de plugins para personalizar a visualização e acrescentar ações.<br/>
-Para criar um plugin é necessário modificar o ficheiro di.properties que se encontra no diretório scr do projeto * [src](https://github.com/bdica/ProjetoPA/tree/master/src).
+Para criar um plugin é necessário modificar o ficheiro di.properties que se encontra na diretoria [src](https://github.com/bdica/ProjetoPA/tree/master/src) do projeto.
 
 
