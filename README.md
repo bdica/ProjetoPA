@@ -78,6 +78,7 @@ O setup tem de implementar a interface JsonFrameSetup e as ações têm de imple
         val height: Int
         val folderIcon: String
         val fileIcon: String
+        val firstNodeName: String
     }
 
     interface JsonAction {

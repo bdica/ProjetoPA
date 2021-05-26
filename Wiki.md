@@ -10,23 +10,23 @@ Esta biblioteca permite criar JSON a partir de objetos, podendo o processo ser a
 Para utilizar o modelo de dados é necessário instanciar a classe ***JsonGenerator*** e utilizar uma das suas funções de acordo com o pretendido.
 
 - Se o pretendido for derivar JSON a partir de um objeto deve-se usar a função ***jsonGenerator(o: Any?)*** da instância criada. É possível derivar JSON a partir de:
-    - Objeto
-    - String
-    - Int
-    - Double
-    - Enum
-    - Boolean
-    - Null
-    - Listas
-    - Maps
-  
+  - Objeto
+  - String
+  - Int
+  - Double
+  - Enum
+  - Boolean
+  - Null
+  - Listas
+  - Maps
+
 ```kt
     var jg = JsonGenerator()
     println(jg.jsonGenerator(objeto))
 ```
 
 - Se o pretendido for criar um ficheiro JSON a partir de um objeto deve-se usar a função ***fileGenerator(o: String)*** da instância criada, que recebe como argumento o texto JSON criado com a função anterior.
-  
+
 ```kt
     var jg = JsonGenerator()
     jg.fileGenerator(jg.jsonGenerator(objeto))
@@ -78,6 +78,7 @@ O setup tem de implementar a interface JsonFrameSetup e as ações têm de imple
         val height: Int
         val folderIcon: String
         val fileIcon: String
+        val firstNodeName: String
     }
 
     interface JsonAction {
@@ -95,5 +96,4 @@ Neste caso o ficheiro indica que a propriedade setup dos objetos JsonTreeSkeleto
     JsonTreeSkeleton.setup=projeto.janela.DefaultSetup
     JsonTreeSkeleton.actions=projeto.janela.Edit,projeto.janela.Undo
 ```
-
 
