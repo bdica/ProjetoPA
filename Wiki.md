@@ -68,6 +68,27 @@ Após isto tem de se invocar a função ***open(o: Any?)*** da classe ***JsonTre
 É possível extender o visualizador através de plugins para personalizar a visualização e acrescentar ações.<br/>
 Para criar um plugin é necessário modificar o ficheiro de configuração ***di.properties*** que se encontra na diretoria [src](https://github.com/bdica/ProjetoPA/tree/master/src) do projeto.
 
+O setup tem de implementar a interface JsonFrameSetup e as ações têm de implementar a interface JsonAction.
+
+```kotlin
+    interface JsonFrameSetup {
+        val title: String
+        val layoutManager: GridLayout
+        val width: Int
+        val height: Int
+        val folderIcon: String
+        val fileIcon: String
+    }
+
+    interface JsonAction {
+        val name: String
+        val textBox: Boolean
+        var input: String
+        fun execute(window: JsonTreeSkeleton)
+        fun undo(window: JsonTreeSkeleton)
+    }
+```
+
 Neste caso o ficheiro indica que a propriedade setup dos objetos JsonTreeSkeleton será inicializada com um objeto DefaultSetup, e que a lista da propriedade actions será populada com um objeto Edit e outro Undo.
 
 ```properties

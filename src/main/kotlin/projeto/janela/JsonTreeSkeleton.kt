@@ -21,7 +21,6 @@ interface JsonFrameSetup {
 interface JsonAction {
     val name: String
     val textBox: Boolean
-    val textBoxMaior: Boolean
     var input: String
     fun execute(window: JsonTreeSkeleton)
     fun undo(window: JsonTreeSkeleton)

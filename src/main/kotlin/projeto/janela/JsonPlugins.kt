@@ -31,9 +31,6 @@ class Edit : JsonAction { //textoBoxMaior vai conter texto do lado direito deo e
     override val textBox: Boolean
         get() = true
 
-    override val textBoxMaior: Boolean
-        get() = true
-
     override var input: String = ""
 
     override fun execute(window: JsonTreeSkeleton) {
@@ -52,9 +49,6 @@ class GenerateFile : JsonAction {
         get() = "Gerar Ficheiro"
 
     override val textBox: Boolean
-        get() = false
-
-    override val textBoxMaior: Boolean
         get() = false
 
     override var input: String = ""
@@ -76,9 +70,6 @@ class Read : JsonAction {
     override val textBox: Boolean
         get() = false
 
-    override val textBoxMaior: Boolean
-        get() = false
-
     override var input: String = ""
 
     override fun execute(window: JsonTreeSkeleton) {
@@ -96,9 +87,6 @@ class Undo : JsonAction {
         get() = "Anular" //texto do botão
 
     override val textBox: Boolean
-        get() = false
-
-    override val textBoxMaior: Boolean
         get() = false
 
     override var input: String = ""
