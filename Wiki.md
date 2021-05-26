@@ -7,7 +7,7 @@ Esta biblioteca permite criar JSON a partir de objetos, podendo o processo ser a
 
 ## 1. Modelo de Dados
 
-Para utilizar o modelo de dados é necessário criar instanciar a classe ***JsonGenerator*** e utilizar uma das suas funções de acordo com o pretendido.
+Para utilizar o modelo de dados é necessário instanciar a classe ***JsonGenerator*** e utilizar uma das suas funções de acordo com o pretendido.
 
 - Se o pretendido for derivar JSON a partir de um objeto deve-se usar a função ***jsonGenerator(o: Any?)*** da instância criada. É possível derivar JSON a partir de:
     - Objeto
@@ -23,18 +23,18 @@ Para utilizar o modelo de dados é necessário criar instanciar a classe ***Json
 ```kt
     var jg = JsonGenerator()
     println(jg.jsonGenerator(objeto))
-  ```
+```
 
 - Se o pretendido for criar um ficheiro JSON a partir de um objeto deve-se usar a função ***fileGenerator(o: String)*** da instância criada, que recebe como argumento o texto JSON criado com a função anterior.
   
 ```kt
     var jg = JsonGenerator()
     jg.fileGenerator(jg.jsonGenerator(objeto))
-  ```
+```
 
 ### Annotações
 
-Como forma de adaptar a instanciação, existem duas anotações disponíveis.
+Como forma de adaptar a instanciação, existem duas anotações disponíveis para serem utilizadas nas classes dos objetos recebidos.
 
 @HideJson:<br/>
 Esta anotação permite omitir uma propriedade de um objeto
@@ -54,6 +54,17 @@ Esta anotação recebe uma string como parâmetro e altera o nome de uma proprie
 
 ## 2. Plugins para o Visualizador
 
-....
+Para utilizar o visualizador JSON é necessário instanciar a classe ***JsonTreeSkeleton*** através da classe ***JsonInjector***.
+A classe ***JsonInjector*** representa uma framework de injeção de dependência e neste caso recebe um pedido para criar um objeto da classe ***JsonTreeSkeleton***.
+Após isto tem de se invocar a função ***open(o: Any?)*** da classe ***JsonTreeSkeleton***, que recebe como parâmetro o objeto pretendido para a criação de JSON.
+
+```kt
+    val w = JsonInjector.create(JsonTreeSkeleton::class)
+    w.open(objeto)
+```
+
+### Plugins
+
+
 
 
