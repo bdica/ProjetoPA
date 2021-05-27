@@ -22,7 +22,7 @@ class DefaultSetup : JsonFrameSetup {
     override val fileIcon: String
         get() = "file_icon.png"
     override val firstNodeName: String
-        get() = ""
+        get() = "Jogador"
 
     override fun setIcons(node: TreeItem, display: Display) {
         val iconePasta = Image(display, folderIcon)
@@ -39,6 +39,19 @@ class DefaultSetup : JsonFrameSetup {
                 setIcons(it, display)
             }
             setIcons(it, display)
+        }
+    }
+
+    override fun addText(node: TreeItem, display: Display) {
+        node.items.forEach {
+            if (it.data.toString().startsWith("[")) { //altera o nome das listas
+                it.text = "children"
+                addText(it, display)
+            }
+            else {
+                addText(it, display)
+            }
+            addText(it, display)
         }
     }
 }

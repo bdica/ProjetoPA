@@ -17,6 +17,7 @@ interface JsonFrameSetup {
     val fileIcon: String
     val firstNodeName: String
     fun setIcons(node: TreeItem, display: Display)
+    fun addText(node: TreeItem, display: Display)
 }
 
 interface JsonAction {
@@ -168,6 +169,7 @@ class JsonTreeSkeleton() {
         setActions()
         ajustarTree()
         inserirIcones()
+        inserirTexto()
 
         tree.expandAll()
         shell.pack()
@@ -238,6 +240,12 @@ class JsonTreeSkeleton() {
     fun undo() {
         if(executedActions.size > 0) { //tem de haver ações já feitas (guardadas em actions)
             executedActions.removeAt(executedActions.size - 1).undo(this)
+        }
+    }
+
+    fun inserirTexto() {
+        tree.items.forEach {
+            setup.addText(it, Display.getDefault())
         }
     }
 
