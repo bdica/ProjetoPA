@@ -4,7 +4,6 @@ import org.eclipse.swt.SWT
 import org.eclipse.swt.events.SelectionAdapter
 import org.eclipse.swt.events.SelectionEvent
 import org.eclipse.swt.graphics.Color
-import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.layout.GridLayout
 import org.eclipse.swt.widgets.*
 import projeto.*
@@ -17,6 +16,7 @@ interface JsonFrameSetup {
     val folderIcon: String
     val fileIcon: String
     val firstNodeName: String
+    fun setIcons(node: TreeItem, display: Display)
 }
 
 interface JsonAction {
@@ -166,7 +166,8 @@ class JsonTreeSkeleton() {
         jsonGerado = visitor.textoJson.substring(0, visitor.textoJson.length - 2).substring(1)
 
         setActions()
-        setIcons()
+        ajustarTree()
+        inserirIcones()
 
         tree.expandAll()
         shell.pack()
@@ -240,6 +241,12 @@ class JsonTreeSkeleton() {
         }
     }
 
+    fun inserirIcones() {
+        tree.items.forEach {
+            setup.setIcons(it, Display.getDefault())
+        }
+    }
+
     fun removeNullsAux(t: TreeItem) {
         t.items.forEach {
             if (it.data.toString().startsWith("null")) {
@@ -248,39 +255,29 @@ class JsonTreeSkeleton() {
         }
     }
 
-    fun setIconsAux(t: TreeItem) {
-        val iconePasta = Image(null, setup.folderIcon)
-        val iconeFicheiro = Image(null, setup.fileIcon)
-
+    fun ajustarTreeAux(t: TreeItem) {
         t.items.forEach {
             if (it.data.toString().startsWith("[") || it.data.toString().startsWith("{")) {
-                it.image = iconePasta
                 removeNullsAux(it)
-                setIconsAux(it)
+                ajustarTreeAux(it)
             } else {
-                it.image = iconeFicheiro
                 removeNullsAux(it)
-                setIconsAux(it)
+                ajustarTreeAux(it)
             }
         }
     }
 
-    fun setIcons() {
-        val iconePasta = Image(null, setup.folderIcon)
-        val iconeFicheiro = Image(null, setup.fileIcon)
-
+    fun ajustarTree() {
         tree.items.forEach {
             if (it.data.toString().startsWith("[") || it.data.toString().startsWith("{")) {
-                it.image = iconePasta
                 removeNullsAux(it)
-                setIconsAux(it)
+                ajustarTreeAux(it)
             } else {
-                it.image = iconeFicheiro
                 removeNullsAux(it)
-                setIconsAux(it)
+                ajustarTreeAux(it)
             }
             removeNullsAux(it)
-            setIconsAux(it)
+            ajustarTreeAux(it)
         }
     }
 

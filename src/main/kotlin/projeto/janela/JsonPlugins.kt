@@ -1,6 +1,9 @@
 package projeto.janela
 
+import org.eclipse.swt.graphics.Image
 import org.eclipse.swt.layout.GridLayout
+import org.eclipse.swt.widgets.Display
+import org.eclipse.swt.widgets.TreeItem
 import projeto.JsonGenerator
 
 //Apresentação
@@ -20,6 +23,24 @@ class DefaultSetup : JsonFrameSetup {
         get() = "file_icon.png"
     override val firstNodeName: String
         get() = ""
+
+    override fun setIcons(node: TreeItem, display: Display) {
+        val iconePasta = Image(display, folderIcon)
+        val iconeFicheiro = Image(display, fileIcon)
+
+        node.items.forEach {
+            if (it.data.toString().startsWith("[") || it.data.toString().startsWith("{")) {
+                it.parentItem.image = iconePasta //se é um objeto ou uma lista, o seu parent tambem tem de ser um objeto ou uma lista
+                it.image = iconePasta
+                setIcons(it, display)
+            }
+            else {
+                it.image = iconeFicheiro
+                setIcons(it, display)
+            }
+            setIcons(it, display)
+        }
+    }
 }
 
 //Ações
