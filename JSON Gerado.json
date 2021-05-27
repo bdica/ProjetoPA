@@ -1,27 +1,8 @@
 {
 "clubes": [ 
 {
-"nome": "Sporting CP",
-"pais": "Portugal",
-"patrocinios": [ 
-{
-"nome": "NOS",
-"validade": 2030
-},
-{
-"nome": "Macron",
-"validade": 2021
-}
-]
-},
-{
 "nome": "Manchester United",
 "pais": "Inglaterra",
-"patrocinios": null
-},
-{
-"nome": "Real Madrid",
-"pais": "Espanha",
 "patrocinios": null
 }
 ],
@@ -36,12 +17,6 @@
 "trofeus": [ 
 {
 "Champions League": 5
-},
-{
-"La Liga": 2
-},
-{
-"Taça de França": "não tem"
 }
 ]
 }

@@ -171,6 +171,7 @@ class JsonTreeSkeleton() {
         ajustarTree()
         inserirIcones()
         inserirTexto()
+        excluirNo()
 
         tree.expandAll()
         shell.pack()
@@ -244,13 +245,13 @@ class JsonTreeSkeleton() {
         }
     }
 
-    fun excluirNo() {
+    fun inserirTexto() {
         tree.items.forEach {
             setup.addText(it, Display.getDefault())
         }
     }
 
-    fun inserirTexto() {
+    fun excluirNo() {
         tree.items.forEach {
             setup.excludeNode(it)
         }
