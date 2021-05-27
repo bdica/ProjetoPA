@@ -54,6 +54,14 @@ class DefaultSetup : JsonFrameSetup {
             addText(it, display)
         }
     }
+
+    override fun excludeNode(node: TreeItem) {
+        node.items.forEach {
+            if (it.text == "retirado") {
+                it.dispose()
+            }
+        }
+    }
 }
 
 //Ações

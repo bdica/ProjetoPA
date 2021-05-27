@@ -18,6 +18,7 @@ interface JsonFrameSetup {
     val firstNodeName: String
     fun setIcons(node: TreeItem, display: Display)
     fun addText(node: TreeItem, display: Display)
+    fun excludeNode(node: TreeItem)
 }
 
 interface JsonAction {
@@ -243,9 +244,15 @@ class JsonTreeSkeleton() {
         }
     }
 
-    fun inserirTexto() {
+    fun excluirNo() {
         tree.items.forEach {
             setup.addText(it, Display.getDefault())
+        }
+    }
+
+    fun inserirTexto() {
+        tree.items.forEach {
+            setup.excludeNode(it)
         }
     }
 
