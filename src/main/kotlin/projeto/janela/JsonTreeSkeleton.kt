@@ -210,6 +210,30 @@ class JsonTreeSkeleton() {
         shell.open()
     }
 
+    fun removeAux(t: TreeItem) {
+        t.items.forEach {
+            if(elementoSelecionado != null) {
+                it.items.forEach {
+                    if(it == elementoSelecionado) {
+                        it.parentItem.data = it.parentItem.data.toString()
+                            .replace("\"" + elementoSelecionado!!.text + "\": " + elementoSelecionado!!.data.toString(), "")
+                        it.dispose()
+                    }
+                }
+            }
+        }
+    }
+
+    fun remove() {
+        tree.items.forEach {
+            if(elementoSelecionado != null) {
+                it.items.forEach {
+                    removeAux(it)
+                }
+            }
+        }
+    }
+
     fun undo() {
         if(executedActions.size > 0) { //tem de haver ações já feitas (guardadas em actions)
             executedActions.removeAt(executedActions.size - 1).undo(this)

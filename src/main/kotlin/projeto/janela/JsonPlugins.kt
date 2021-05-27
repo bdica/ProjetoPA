@@ -81,7 +81,24 @@ class Read : JsonAction {
     override fun undo(window: JsonTreeSkeleton) {
         window.undo()
     }
+}
 
+class Remove : JsonAction {
+    override val name: String
+        get() = "Delete"
+
+    override val textBox: Boolean
+        get() = false
+
+    override var input: String = ""
+
+    override fun execute(window: JsonTreeSkeleton) {
+        window.remove()
+    }
+
+    override fun undo(window: JsonTreeSkeleton) {
+        window.undo()
+    }
 }
 
 class Undo : JsonAction {
